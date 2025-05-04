@@ -45,5 +45,10 @@ public class Queue {
 	public int size() {
 		return count;
 	}
+	public Object get(int index) {
+	    if (index < 0 || index >= count) return null;
+	    int realIndex = (front + index) % elements.length;
+	    return elements[realIndex];
+	}
 }
 
