@@ -71,7 +71,9 @@ public class Player {
     public void drawAll() {
         for (int yy = 0; yy < mapData.length; yy++) {
             for (int xx = 0; xx < mapData[yy].length; xx++) {
-                cn.getTextWindow().output(xx, yy, mapData[yy][xx]);
+                if(mapData[y][x] != '^') {
+                	cn.getTextWindow().output(x, y, mapData[y][x]);
+                }
             }
         }
         cn.getTextWindow().output(x, y, symbol);
