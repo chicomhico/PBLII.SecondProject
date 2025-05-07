@@ -1,52 +1,55 @@
 package pbb_project2;
 
 public class Computer {
-	Player player;
-	public Computer(Player player) {
-		this.player = player;
+	public Computer(Coordinate start) {
+		current = start;
 	}
-	public Stack findPath(Coordinate currentCoordinate, Coordinate targetCoordinate) {
-		Stack path = new Stack(5000);
-		
-		while(currentCoordinate != targetCoordinate) {
+	Coordinate current;
+	public Stack findPath(Coordinate targetCoordinate) {
+		Stack path = new Stack(100);
+		Coordinate currentCoordinate = new Coordinate(current.x, current.y);
+		while(currentCoordinate.x != targetCoordinate.x ||currentCoordinate.y != targetCoordinate.y) {
 			path.Push(currentCoordinate);
 			
-			if(player.mapData[currentCoordinate.x + 1][currentCoordinate.y] != '#' && 
-					player.mapData[currentCoordinate.x + 1][currentCoordinate.y] != '^') {
+			if(Player.mapData[currentCoordinate.x + 1][currentCoordinate.y] != '#' && 
+					Player.mapData[currentCoordinate.x + 1][currentCoordinate.y] != '^') {
 				currentCoordinate.x++;
 			}
-			else if(player.mapData[currentCoordinate.x][currentCoordinate.y - 1] != '#' && 
-					player.mapData[currentCoordinate.x][currentCoordinate.y - 1] != '^') {
+			else if(Player.mapData[currentCoordinate.x][currentCoordinate.y - 1] != '#' && 
+					Player.mapData[currentCoordinate.x][currentCoordinate.y - 1] != '^') {
 				currentCoordinate.y--;				
 			}
-			else if(player.mapData[currentCoordinate.x - 1][currentCoordinate.y] != '#' &&
-					player.mapData[currentCoordinate.x - 1][currentCoordinate.y] != '^') {
+			else if(Player.mapData[currentCoordinate.x - 1][currentCoordinate.y] != '#' &&
+					Player.mapData[currentCoordinate.x - 1][currentCoordinate.y] != '^') {
 				currentCoordinate.x--;
 			}
-			else if(player.mapData[currentCoordinate.x][currentCoordinate.y + 1] != '#' && 
-					player.mapData[currentCoordinate.x][currentCoordinate.y + 1] != '^') {
+			else if(Player.mapData[currentCoordinate.x][currentCoordinate.y + 1] != '#' && 
+					Player.mapData[currentCoordinate.x][currentCoordinate.y + 1] != '^') {
 				currentCoordinate.y++;
 			}
 			
 			// etrafındaki tüm kareler ya duvar ya da daha önce o kareden geçmişse else'e giriyor
-			// currentcoordinate = stack.Pop();
 			else {
-				if(player.mapData[currentCoordinate.x + 1][currentCoordinate.y] != '#') {
+				currentCoordinate = (Coordinate)path.Pop();
+			}
+			System.out.println(currentCoordinate.x + " , " + currentCoordinate.y);
+			/*else {
+				if(Player.mapData[currentCoordinate.x + 1][currentCoordinate.y] != '#') {
 					currentCoordinate.x++;
 				}
-				else if(player.mapData[currentCoordinate.x][currentCoordinate.y - 1] != '#') {
+				else if(Player.mapData[currentCoordinate.x][currentCoordinate.y - 1] != '#') {
 					currentCoordinate.y--;
 				}
-				else if(player.mapData[currentCoordinate.x - 1][currentCoordinate.y] != '#') {
+				else if(Player.mapData[currentCoordinate.x - 1][currentCoordinate.y] != '#') {
 					currentCoordinate.x--;
 				}
 				else {
 					currentCoordinate.y++;
 				}
-			}
+			}*/
 			
 			//Daha önce ordan geçmiş mi diye kontrol etmek için	
-			player.mapData[currentCoordinate.x][currentCoordinate.y] = '^'; 
+			Player.mapData[currentCoordinate.x][currentCoordinate.y] = '^'; 
 			
 		}
 		

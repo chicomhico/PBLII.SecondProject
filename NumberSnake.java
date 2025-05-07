@@ -14,9 +14,8 @@ public class NumberSnake {
 		boolean flag = true;
 		Board board = new Board();
 		Player player = new Player(board);
-		
-		
-		
+		Computer computer = new Computer(new Coordinate(5, 5));
+		Stack path = computer.findPath(new Coordinate(14, 4));
 		while(flag) {
 			player.Interface();
 			player.drawAll();
@@ -25,6 +24,8 @@ public class NumberSnake {
 			player.update();
 			if(Player.energy!=0) {
 				Thread.sleep(100);
+				
+				computer.current = (Coordinate)path.Pop();
 				timerCounter++;
 			}
 			else {

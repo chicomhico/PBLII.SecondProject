@@ -13,6 +13,7 @@ public class Board {
 	public static enigma.console.Console cn = Enigma.getConsole();
 	int lastProcessedTime = -1;
 	public static Queue queue = new Queue(100);
+	public static int srob=0;
 
 	public char[][] loadMap(String fileName) {
 		map = null;
@@ -114,6 +115,7 @@ public class Board {
 		            } else {
 		                ch = obj.toString().charAt(0);
 		            }
+		            if(ch=='S') srob++; 
 		            map[y][x] = ch;
 		            flag = false;
 		        }
@@ -173,12 +175,14 @@ public class Board {
 				inp = '@';
 			} else {
 				inp = 'S';
+				srob++;
 			}
 			while(flag) {
 		        int x = rnd.nextInt(55);
 		        int y = rnd.nextInt(23);
 		        if(map[y][x] == ' ') {
 		           map[y][x] = inp;
+		           
 		            flag = false;
 		        }
 		        

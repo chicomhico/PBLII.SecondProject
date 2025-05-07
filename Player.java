@@ -39,10 +39,10 @@ public class Player {
 
     public void update() {
         if (keypr == 1) {
-        	/*if(energy>0) {
+        	if(energy>0) {
             	energy-=20;
             	if(energy<0)energy=0;
-            }*/
+            }
             cn.getTextWindow().output(x, y, mapData[y][x]);
             int newX = x, newY = y;
             if (rkey == KeyEvent.VK_LEFT && canMove(x - 1, y)) newX--;
@@ -71,9 +71,7 @@ public class Player {
     public void drawAll() {
         for (int yy = 0; yy < mapData.length; yy++) {
             for (int xx = 0; xx < mapData[yy].length; xx++) {
-                if(mapData[y][x] != '^') {
-                	cn.getTextWindow().output(x, y, mapData[y][x]);
-                }
+                cn.getTextWindow().output(xx, yy, mapData[yy][xx]);
             }
         }
         cn.getTextWindow().output(x, y, symbol);
@@ -90,6 +88,13 @@ public class Player {
     	System.out.print("Trap   : " + trap);
     	cn.getTextWindow().setCursorPosition(62, 14);
     	System.out.print("Score  : "+ score);
+    	
+    	cn.getTextWindow().setCursorPosition(61, 17);
+    	System.out.print("---Computer---");
+    	cn.getTextWindow().setCursorPosition(62, 18);
+    	System.out.print("S Robot : " + Board.srob );
+    	cn.getTextWindow().setCursorPosition(62, 19);
+    	System.out.print("Score   : " + life );
     }
     public void updatePlayer() {
     	if (mapData[y][x]=='1') {
