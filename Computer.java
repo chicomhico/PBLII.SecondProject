@@ -1,12 +1,15 @@
 package pbb_project2;
+import java.util.Random;
 
 public class Computer {
 	public Computer(Coordinate start) {
 		current = start;
 	}
+	Random random = new Random();
+	Coordinate target = new Coordinate(0,0);
 	Coordinate current;
-	Stack CurrentPath = new Stack(1000);
-	Stack memoryStack = new Stack(1000);
+	Stack CurrentPath = new Stack(100000);
+	Stack memoryStack = new Stack(100000);
 	public Stack findPath(Coordinate targetCoordinate) {
 		Stack path = new Stack(1000);
 		Coordinate currentCoordinate = new Coordinate(current.x, current.y);
@@ -37,14 +40,14 @@ public class Computer {
 			else {
 				path.Pop();
 				currentCoordinate = (Coordinate)path.Peek();
+			}
 			Player.mapData[currentCoordinate.x][currentCoordinate.y] = '^'; 
-		}
 		}
 		return path;
 	}
 	public void PlayMove() {
-		if (CurrentPath.isEmpty()) // buraya treasure yenmiş mi diye kontrol edilmeli
-			CurrentPath = findPath(new Coordinate(9,9)); // buraya random kordinat gelmeli
+		findRandomTarget();
+		CurrentPath = findPath(target);
 		Coordinate last = new Coordinate(0,0);
 		while (!CurrentPath.isEmpty()) {
 			last = (Coordinate)CurrentPath.Pop();
@@ -55,6 +58,20 @@ public class Computer {
 		while (!memoryStack.isEmpty()) {
 			last = (Coordinate)memoryStack.Pop();
 			CurrentPath.Push(last);
+		}
+	}
+	
+	private void findRandomTarget() {
+		boolean isFound = false;
+		
+		while(!isFound) {
+			target.x = random.nextInt(55);
+			target.y = random.nextInt(23);
+			
+			if(Player.mapData[target.x][target.y] == '1' || Player.mapData[target.x][target.y] == '2' 
+					|| Player.mapData[target.x][target.y] == '3') {
+				isFound = true;
+			}
 		}
 	}
 }
