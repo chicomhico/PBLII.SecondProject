@@ -53,12 +53,24 @@ public class Computer {
 			last = (Coordinate)CurrentPath.Pop();
 			memoryStack.Push(last);
 		}
-		memoryStack.Pop();
-		current = last; // bu koda orası engel mi diye bakmalı
+		
+		Coordinate c = (Coordinate) memoryStack.Peek();
+		
+		if(Player.mapData[c.x][c.y] != '#') {
+			memoryStack.Pop();
+			current = last; 
+		}
 		while (!memoryStack.isEmpty()) {
 			last = (Coordinate)memoryStack.Pop();
 			CurrentPath.Push(last);
 		}
+		
+		while(!CurrentPath.isEmpty()) {
+			Coordinate coord = (Coordinate) CurrentPath.Pop();
+			
+			Player.mapData[coord.x][coord.y] = '·';
+		}
+		
 	}
 	
 	private void findRandomTarget() {
@@ -73,5 +85,22 @@ public class Computer {
 				isFound = true;
 			}
 		}
+	}
+	
+	public void ClearLastPath() {
+		for(int i = 0; i < Player.mapData.length; i++) {
+			for(int j = 0; j < Player.mapData[i].length; j++) {
+				if(Player.mapData[i][j] == '^') {
+					Player.mapData[i][j] = ' ';
+				}
+			}
+		}
+		
+		
+		
+		
+		
+		
+		
 	}
 }
