@@ -1,6 +1,6 @@
 package pbb_project2;
 
-import enigma.core.Enigma;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -8,14 +8,41 @@ import java.io.IOException;
 import java.util.Random;
 
 public class Board {
-	NumberSnake nSnake=new NumberSnake();
-	public char[][] map;
-	public static enigma.console.Console cn = Enigma.getConsole();
-	int lastProcessedTime = -1;
-	public static Queue queue = new Queue(100);
-	public static int srob=0;
+	public char[][] map; // sadece treasure kullanılmamış trap ve duvarlar
+	public Queue queue = new Queue(100);
+	public int srob=0;
+	private long timer;
+	
+	private NumberSnake game;
 
-	public char[][] loadMap(String fileName) {
+	public Board(NumberSnake game) {
+		this.game = game;
+		loadMap("map.txt");
+		inputQueue();
+		displayInputQueue();
+	}
+	public boolean TimeElapse(long elapsedtime) {
+		timer += elapsedtime;
+		if (timer > 1000) {
+			displayInputQueue();
+			timer -= 1000;
+			InputFromQueue();
+			return true;
+		}
+		return false;
+	}
+	public char[][] CopyMap(){
+		char[][] result = new char[game.board.map.length][];
+		for (int yy = 0; yy < game.board.map.length; yy++) {
+			char[] toadd = new char[game.board.map[yy].length];
+            for (int xx = 0; xx < game.board.map[yy].length; xx++) {
+                toadd[xx] = map[yy][xx];
+            }
+            result[yy] = toadd;
+        }
+		return result;
+	}
+	private void loadMap(String fileName) {
 		map = null;
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(fileName));
@@ -56,11 +83,9 @@ public class Board {
 		for(int i=0;i<30;i++) {
 			map=firstElements();
 		}
-		
-		return map;
 	}
 
-	public static Queue inputQueue() {
+	private void inputQueue() {
 		Random rnd = new Random();
 		int x = 0;
 		for (int i = 0; i < 15; i++) {
@@ -78,58 +103,52 @@ public class Board {
 			}
 
 		}
-		return queue;
 	}
 
-	public void displayInputQueue() {
-		Random rnd = new Random();
+	private void displayInputQueue() {
 		int startX = 61;
 		int startY = 2;
-		int x=0;
-		int y=0;
 		
-			cn.getTextWindow().setCursorPosition(startX,startY);
+			game.cn.getTextWindow().setCursorPosition(startX,startY);
 			System.out.print("Input");
-			cn.getTextWindow().setCursorPosition(startX,startY+1);
+			game.cn.getTextWindow().setCursorPosition(startX,startY+1);
 			System.out.print("<<<<<<<<<<<<<<<");
-			cn.getTextWindow().setCursorPosition(startX,startY+2);
+			game.cn.getTextWindow().setCursorPosition(startX,startY+2);
 			int size = queue.size();
 			for (int i = 0; i < size; i++) {
 				System.out.print(queue.peek());
 				queue.enqueue(queue.dequeue());
 			}
-			cn.getTextWindow().setCursorPosition(startX,startY+3);
+			game.cn.getTextWindow().setCursorPosition(startX,startY+3);
 			System.out.print("<<<<<<<<<<<<<<<");
-		
-		if (NumberSnake.timer % 2 == 0 && NumberSnake.timer != lastProcessedTime && NumberSnake.timer !=0) {
-		    lastProcessedTime = NumberSnake.timer;
-		    boolean flag = true;
+	}
+	private void InputFromQueue(){
+		Random rnd = new Random();
+		boolean flag = true;
 		    while(flag) {
-		        x = rnd.nextInt(55);
-		        y = rnd.nextInt(23);
-		        if(map[y][x] == ' ') {
-		            Object obj = queue.peek();
-		            char ch;
-		            if (obj instanceof Integer) {
-		                ch = (char) ('0' + (Integer) obj);
-		            } else {
-		                ch = obj.toString().charAt(0);
-		            }
-		            if(ch=='S') srob++; 
-		            map[y][x] = ch;
-		            flag = false;
+		    int x = rnd.nextInt(55);
+		    int y = rnd.nextInt(23);
+		    if(map[y][x] == ' ') {
+		        Object obj = queue.peek();
+		        char ch;
+		        if (obj instanceof Integer) {
+		            ch = (char) ('0' + (Integer) obj);
+		        } else {
+		            ch = obj.toString().charAt(0);
 		        }
-		        
+		        if(ch=='S') srob++; 
+		        map[y][x] = ch;
+		        flag = false;
 		    }
-		    
-		    queue.dequeue();
-		    queue=updateInput();
+		  
 		}
 		
+		queue.dequeue();
+		UpdateQueue();
 	}
 
 	public void displayTimer(int time) {
-		cn.getTextWindow().setCursorPosition(61, 8);
+		game.cn.getTextWindow().setCursorPosition(61, 8);
 		System.out.print("Time    : " + time);
 	}
 
@@ -138,12 +157,12 @@ public class Board {
 			for (int x = 0; x < map[y].length; x++) {
 				char c = map[y][x];
 				if (c == '\u0000') c = ' ';
-				cn.getTextWindow().output(x, y, c);
+				game.cn.getTextWindow().output(x, y, c);
 			}
 		}
 	}
 	
-	public Queue updateInput() {
+	public void UpdateQueue() {
 		Random rnd = new Random();
 		int x = rnd.nextInt(100) + 1;
 		if (x >= 1 && x <= 50) {
@@ -157,7 +176,6 @@ public class Board {
 		} else {
 			queue.enqueue("S");
 		}
-		return queue;
 	}
 	public char[][] firstElements() {
 		char inp = ' ';

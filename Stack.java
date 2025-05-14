@@ -26,7 +26,7 @@ public class Stack {
 			return temp;
 		}
 		else {
-			//System.out.println("Stack is empty.");
+			System.out.println("Stack is empty.");
 			return null;
 		}
 	}

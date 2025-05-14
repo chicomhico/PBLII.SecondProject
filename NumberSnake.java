@@ -4,31 +4,45 @@ package pbb_project2;
 import enigma.core.Enigma;
 
 public class NumberSnake {
-	public static int timer = 0;
-	public static Queue q = new Queue(100);
-	public static enigma.console.Console cn = Enigma.getConsole("Number Snakes",100,30,24,1);
-	public static Queue queue = Board.inputQueue();
+	public int timer = 0;
+	public Queue q = new Queue(100);
+	public enigma.console.Console cn = Enigma.getConsole("Number Snakes",100,30,24,1);
 	static int lastProcessedTime = -1;
 	public static double timerCounter = 0;
-	public static void main(String[] args) throws Exception {
+	public char[][] mapData;
+	Board board;
+	Player player;
+	Computer computer;
+	public void main() throws Exception {
+		board = new Board(this);
+		player = new Player(this);
+		mapData = board.CopyMap();
 		boolean flag = true;
-		Board board = new Board();
-		Player player = new Player(board);
-		Computer computer = new Computer(new Coordinate(4, 4));
-		Stack path = computer.findPath(new Coordinate(9, 9));
-		int lenght = path.Size();
-		int num = 0;
-		for (int i = 0; i < lenght; i++) {
-			Thread.sleep(200);
-			player.Interface();
-			player.drawAll();
-			Coordinate cor = (Coordinate)path.Pop();
-			String output = "" + (num+4);
-			Player.mapData[cor.x][cor.y] = output.charAt(0);
-			num = (num + 1)%6;
-		}
-		Player.mapData[4][4] = 'C';
+		computer = new Computer(new Coordinate(4, 4),this);
+		long previoustime = System.currentTimeMillis();
+		long timertimer = 0;
+		board.displayTimer(timer);
+		drawAll();
 		while(flag) {
+			long currenttime = System.currentTimeMillis();
+			long difference = currenttime - previoustime;
+			Boolean ismapchanged = player.TimeElapse(difference);
+			ismapchanged = ismapchanged || board.TimeElapse(difference);
+			ismapchanged = ismapchanged || computer.TimeElapse(difference);
+			if (ismapchanged) {
+				drawAll();
+			}
+			timertimer += difference;
+			
+			if (timertimer > 1000) {
+				timertimer -= 1000;
+				timer++;
+				board.displayTimer(timer);
+			}
+			previoustime = currenttime;
+			Thread.sleep(1);
+		}
+		/*while(flag) {
 			player.Interface();
 			player.drawAll();
 			board.displayInputQueue(); 
@@ -49,9 +63,26 @@ public class NumberSnake {
 				timer++;
 				timerCounter = 0;
 			}
-		}
+		}*/
 	}
-		
-	
+	public boolean isAvailableToMove(Coordinate coordinate) {
+		if (board.map[coordinate.x][coordinate.y] == '#')
+			return false;
+		if (coordinate.x == player.x && coordinate.y == player.y)
+			return false;
+		if (coordinate.x == computer.current.x && coordinate.y == computer.current.y)
+			return false;
+		return true;
+	}
+	public void drawAll() {
+        for (int yy = 0; yy < board.map.length; yy++) {
+            for (int xx = 0; xx < board.map[yy].length; xx++) {
+                cn.getTextWindow().output(xx, yy, board.map[yy][xx]);
+            }
+        }
+        cn.getTextWindow().output(player.x, player.y, player.symbol);
+        cn.getTextWindow().output(computer.current.y, computer.current.x, 'C');
+        cn.getTextWindow().output(55, 23, ' ');
+    }
 
 }

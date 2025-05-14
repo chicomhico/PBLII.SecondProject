@@ -2,36 +2,52 @@ package pbb_project2;
 import java.util.Random;
 
 public class Computer {
-	public Computer(Coordinate start) {
+	public Computer(Coordinate start , NumberSnake game) {
 		current = start;
+		this.game = game;
+		ClearLastPath();
 	}
-	Random random = new Random();
-	Coordinate target = new Coordinate(0,0);
+	NumberSnake game;
+	private Random random = new Random();
+	private Coordinate target = new Coordinate(0,0);
 	Coordinate current;
-	Stack CurrentPath = new Stack(100000);
-	Stack memoryStack = new Stack(100000);
-	public Stack findPath(Coordinate targetCoordinate) {
+	private Stack CurrentPath = new Stack(100000);
+	private Stack memoryStack = new Stack(1000);
+	private int timer = 0;
+	private boolean[][] isvisited = new boolean[23][55];
+	public boolean TimeElapse(long elapsedtime) {
+		timer += elapsedtime;
+		if (timer > 400) {
+			timer -= 400;
+			PlayMove();
+			if (game.board.map[current.x][current.y] == '·')
+				game.board.map[current.x][current.y] = ' ';
+			return true;
+		}
+		return false;
+	}
+	private void findPath(Coordinate targetCoordinate) {
 		Stack path = new Stack(1000);
 		Coordinate currentCoordinate = new Coordinate(current.x, current.y);
 		while(currentCoordinate.x != targetCoordinate.x ||currentCoordinate.y != targetCoordinate.y) {
 			currentCoordinate = new Coordinate(currentCoordinate.x, currentCoordinate.y);
-			if(Player.mapData[currentCoordinate.x + 1][currentCoordinate.y] != '#' && 
-					Player.mapData[currentCoordinate.x + 1][currentCoordinate.y] != '^') {
+			if(game.isAvailableToMove(new Coordinate(currentCoordinate.x + 1,currentCoordinate.y)) && 
+					!isvisited[currentCoordinate.x + 1][currentCoordinate.y]) {
 				currentCoordinate.x++;
 				path.Push(currentCoordinate);
 			}
-			else if(Player.mapData[currentCoordinate.x][currentCoordinate.y - 1] != '#' && 
-					Player.mapData[currentCoordinate.x][currentCoordinate.y - 1] != '^') {
+			else if(game.isAvailableToMove(new Coordinate(currentCoordinate.x ,currentCoordinate.y - 1)) && 
+					!isvisited[currentCoordinate.x][currentCoordinate.y - 1]) {
 				currentCoordinate.y--;		
 				path.Push(currentCoordinate);
 			}
-			else if(Player.mapData[currentCoordinate.x - 1][currentCoordinate.y] != '#' &&
-					Player.mapData[currentCoordinate.x - 1][currentCoordinate.y] != '^') {
+			else if(game.isAvailableToMove(new Coordinate(currentCoordinate.x - 1,currentCoordinate.y)) &&
+					!isvisited[currentCoordinate.x - 1][currentCoordinate.y]) {
 				currentCoordinate.x--;
 				path.Push(currentCoordinate);
 			}
-			else if(Player.mapData[currentCoordinate.x][currentCoordinate.y + 1] != '#' && 
-					Player.mapData[currentCoordinate.x][currentCoordinate.y + 1] != '^') {
+			else if(game.isAvailableToMove(new Coordinate(currentCoordinate.x ,currentCoordinate.y + 1)) && 
+					!isvisited[currentCoordinate.x][currentCoordinate.y + 1]) {
 				currentCoordinate.y++;
 				path.Push(currentCoordinate);
 			}
@@ -39,24 +55,28 @@ public class Computer {
 			// etrafındaki tüm kareler ya duvar ya da daha önce o kareden geçmişse else'e giriyor
 			else {
 				path.Pop();
-				currentCoordinate = (Coordinate)path.Peek();
+				if (!path.isEmpty())
+					currentCoordinate = (Coordinate)path.Peek();
 			}
-			Player.mapData[currentCoordinate.x][currentCoordinate.y] = '^'; 
+			isvisited[currentCoordinate.x][currentCoordinate.y] = true; 
 		}
-		return path;
+		CurrentPath = path;
+		ClearLastPath();
 	}
-	public void PlayMove() {
-		findRandomTarget();
-		CurrentPath = findPath(target);
-		Coordinate last = new Coordinate(0,0);
+	private void PlayMove() {
+		if (!(game.board.map[target.x][target.y] == '1' || game.board.map[target.x][target.y] == '2' 
+				|| game.board.map[target.x][target.y] == '3') || CurrentPath.isEmpty()) {
+			findRandomTarget();
+			findPath(target);
+		}
+		memoryStack = new Stack(1000);
+		Coordinate last = null;
 		while (!CurrentPath.isEmpty()) {
 			last = (Coordinate)CurrentPath.Pop();
 			memoryStack.Push(last);
 		}
 		
-		Coordinate c = (Coordinate) memoryStack.Peek();
-		
-		if(Player.mapData[c.x][c.y] != '#') {
+		if(game.board.map[last.x][last.y] != '#') {
 			memoryStack.Pop();
 			current = last; 
 		}
@@ -67,8 +87,14 @@ public class Computer {
 		
 		while(!CurrentPath.isEmpty()) {
 			Coordinate coord = (Coordinate) CurrentPath.Pop();
-			
-			Player.mapData[coord.x][coord.y] = '·';
+			if (game.board.map[coord.x][coord.y] == ' ') {
+				game.board.map[coord.x][coord.y] = '·';
+			}
+			memoryStack.Push(coord);
+		}
+		while (!memoryStack.isEmpty()) {
+			last = (Coordinate)memoryStack.Pop();
+			CurrentPath.Push(last);
 		}
 		
 	}
@@ -77,22 +103,20 @@ public class Computer {
 		boolean isFound = false;
 		
 		while(!isFound) {
-			target.x = random.nextInt(55);
-			target.y = random.nextInt(23);
+			target.x = random.nextInt(23);
+			target.y = random.nextInt(55);
 			
-			if(Player.mapData[target.x][target.y] == '1' || Player.mapData[target.x][target.y] == '2' 
-					|| Player.mapData[target.x][target.y] == '3') {
+			if(game.board.map[target.x][target.y] == '1' || game.board.map[target.x][target.y] == '2' 
+					|| game.board.map[target.x][target.y] == '3') {
 				isFound = true;
 			}
 		}
 	}
 	
-	public void ClearLastPath() {
-		for(int i = 0; i < Player.mapData.length; i++) {
-			for(int j = 0; j < Player.mapData[i].length; j++) {
-				if(Player.mapData[i][j] == '^') {
-					Player.mapData[i][j] = ' ';
-				}
+	private void ClearLastPath() {
+		for(int i = 0; i < isvisited.length; i++) {
+			for(int j = 0; j < isvisited[i].length; j++) {
+				isvisited[i][j] = false;
 			}
 		}
 		
