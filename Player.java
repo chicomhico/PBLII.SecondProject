@@ -1,10 +1,11 @@
 package pbb_project2;
 import enigma.core.Enigma;
+import enigma.console.TextAttributes;
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class Player {
-
 	public enigma.console.Console cn = Enigma.getConsole();
     public KeyListener klis;
     public static int energy=1000;
@@ -18,7 +19,7 @@ public class Player {
     int keypr = 0;
     int rkey;
 
-    int x = 5, y = 5;
+    int x = 10, y = 10;
 
     public Player(Board board) throws Exception {
         mapData = board.loadMap("map.txt");
@@ -39,43 +40,53 @@ public class Player {
 
     public void update() {
         if (keypr == 1) {
-        	if(energy>0) {
-            	energy-=20;
-            	if(energy<0)energy=0;
-            }
-            cn.getTextWindow().output(x, y, mapData[y][x]);
             int newX = x, newY = y;
             if (rkey == KeyEvent.VK_LEFT && canMove(x - 1, y)) newX--;
             if (rkey == KeyEvent.VK_RIGHT && canMove(x + 1, y)) newX++;
             if (rkey == KeyEvent.VK_UP && canMove(x, y - 1)) newY--;
             if (rkey == KeyEvent.VK_DOWN && canMove(x, y + 1)) newY++;
-            x = newX;
-            y = newY;
-            cn.getTextWindow().output(x, y, symbol);
-            
-            
+
+            if ((newX != x || newY != y) && energy > 0) {
+                energy -= 20;
+                if (energy < 0) energy = 0;
+                char c = mapData[x][y];
+                Color fg = Color.WHITE;
+                Color bg = Color.BLACK;
+                if (c == 'P' || c == '@') fg = Color.BLUE;
+                if (c == 'C' || c == 'S') { fg = Color.WHITE; bg = Color.RED; }
+                cn.getTextWindow().output(x, y, c, new TextAttributes(fg, bg));
+                x = newX;
+                y = newY;
+                cn.getTextWindow().output(x, y, symbol, new TextAttributes(Color.BLUE, Color.BLACK));
+            }
             keypr = 0;
         }
     }
 
     public boolean canMove(int newX, int newY) {
-        if (newX < 0 || newX >= mapData[0].length || newY < 0 || newY >= mapData.length) {
+        if (newX < 0 || newX >= mapData.length || newY < 0 || newY >= mapData[0].length) {
             return false;
         }
-        if (mapData[newY][newX] == '#') {
+        if (mapData[newX][newY] == '#') {
             return false;
         }
         return true;
     }
 
     public void drawAll() {
-        for (int yy = 0; yy < mapData.length; yy++) {
-            for (int xx = 0; xx < mapData[yy].length; xx++) {
-                cn.getTextWindow().output(xx, yy, mapData[yy][xx]);
+        for (int yy = 0; yy < mapData[0].length; yy++) {
+            for (int xx = 0; xx < mapData.length; xx++) {
+                char c = mapData[xx][yy];
+                Color fg = Color.WHITE;
+                Color bg = Color.BLACK;
+                if (c == '@') fg = Color.BLUE;
+                if (c == 'C' || c == 'S') { fg = Color.WHITE; bg = Color.RED; }
+                cn.getTextWindow().output(xx, yy, c, new TextAttributes(fg, bg));
             }
         }
-        cn.getTextWindow().output(x, y, symbol);
+        cn.getTextWindow().output(x, y, symbol, new TextAttributes(Color.BLUE, Color.BLACK));
     }
+
     public void Interface() {
     	updatePlayer();
     	cn.getTextWindow().setCursorPosition(61, 10);
@@ -96,32 +107,32 @@ public class Player {
     	cn.getTextWindow().setCursorPosition(62, 19);
     	System.out.print("Score   : " + life );
     }
+
     public void updatePlayer() {
-    	if (mapData[y][x]=='1') {
+    	if (mapData[x][y]=='1') {
 			energy+=50;
 			score+=1;
-			mapData[y][x]= ' ';
+			mapData[x][y]= ' ';
 		}
-    	if (mapData[y][x]=='2') {
+    	if (mapData[x][y]=='2') {
 			energy+=150;
 			score+=4;
-			mapData[y][x]= ' ';
+			mapData[x][y]= ' ';
 		}
-    	if (mapData[y][x]=='3') {
+    	if (mapData[x][y]=='3') {
 			energy+=250;
 			score+=16;
-			mapData[y][x]= ' ';
+			mapData[x][y]= ' ';
 		}
-    	if (mapData[y][x]=='S') {
+    	if (mapData[x][y]=='S') {
 			energy+=500;
-			mapData[y][x]= ' ';
+			mapData[x][y]= ' ';
 		}
-    	if (mapData[y][x]=='@') {
+    	if (mapData[x][y]=='@') {
 			trap++;
 			score+=50;
-			mapData[y][x]= ' ';
+			mapData[x][y]= ' ';
 		}
     }
-
 }
 

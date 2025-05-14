@@ -19,7 +19,7 @@ public class NumberSnake {
 		int lenght = path.Size();
 		int num = 0;
 		for (int i = 0; i < lenght; i++) {
-			Thread.sleep(200);
+			Thread.sleep(100);
 			player.Interface();
 			player.drawAll();
 			Coordinate cor = (Coordinate)path.Pop();

@@ -1,10 +1,11 @@
 package pbb_project2;
 
 import enigma.core.Enigma;
+import enigma.console.TextAttributes;
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-
 import java.util.Random;
 
 public class Board {
@@ -30,7 +31,7 @@ public class Board {
 				y++;
 			}
 
-			map = new char[y][maxLength];
+			map = new char[maxLength][y];
 
 			br.close();
 			br = new BufferedReader(new FileReader(fileName));
@@ -39,9 +40,9 @@ public class Board {
 			while ((line = br.readLine()) != null) {
 				for (int x = 0; x < maxLength; x++) {
 					if (x < line.length()) {
-						map[y][x] = line.charAt(x);
+						map[x][y] = line.charAt(x);
 					} else {
-						map[y][x] = ' ';
+						map[x][y] = ' ';
 					}
 				}
 				y++;
@@ -76,7 +77,6 @@ public class Board {
 			} else {
 				queue.enqueue("S");
 			}
-
 		}
 		return queue;
 	}
@@ -88,44 +88,41 @@ public class Board {
 		int x=0;
 		int y=0;
 		
-			cn.getTextWindow().setCursorPosition(startX,startY);
-			System.out.print("Input");
-			cn.getTextWindow().setCursorPosition(startX,startY+1);
-			System.out.print("<<<<<<<<<<<<<<<");
-			cn.getTextWindow().setCursorPosition(startX,startY+2);
-			int size = queue.size();
-			for (int i = 0; i < size; i++) {
-				System.out.print(queue.peek());
-				queue.enqueue(queue.dequeue());
-			}
-			cn.getTextWindow().setCursorPosition(startX,startY+3);
-			System.out.print("<<<<<<<<<<<<<<<");
+		cn.getTextWindow().setCursorPosition(startX,startY);
+		System.out.print("Input");
+		cn.getTextWindow().setCursorPosition(startX,startY+1);
+		System.out.print("<<<<<<<<<<<<<<<");
+		cn.getTextWindow().setCursorPosition(startX,startY+2);
+		int size = queue.size();
+		for (int i = 0; i < size; i++) {
+			System.out.print(queue.peek());
+			queue.enqueue(queue.dequeue());
+		}
+		cn.getTextWindow().setCursorPosition(startX,startY+3);
+		System.out.print("<<<<<<<<<<<<<<<");
 		
 		if (NumberSnake.timer % 2 == 0 && NumberSnake.timer != lastProcessedTime && NumberSnake.timer !=0) {
-		    lastProcessedTime = NumberSnake.timer;
-		    boolean flag = true;
-		    while(flag) {
-		        x = rnd.nextInt(55);
-		        y = rnd.nextInt(23);
-		        if(map[y][x] == ' ') {
-		            Object obj = queue.peek();
-		            char ch;
-		            if (obj instanceof Integer) {
-		                ch = (char) ('0' + (Integer) obj);
-		            } else {
-		                ch = obj.toString().charAt(0);
-		            }
-		            if(ch=='S') srob++; 
-		            map[y][x] = ch;
-		            flag = false;
-		        }
-		        
-		    }
-		    
-		    queue.dequeue();
-		    queue=updateInput();
+			lastProcessedTime = NumberSnake.timer;
+			boolean flag = true;
+			while(flag) {
+				x = rnd.nextInt(map.length);
+				y = rnd.nextInt(map[0].length);
+				if(map[x][y] == ' ') {
+					Object obj = queue.peek();
+					char ch;
+					if (obj instanceof Integer) {
+						ch = (char) ('0' + (Integer) obj);
+					} else {
+						ch = obj.toString().charAt(0);
+					}
+					if(ch=='S') srob++; 
+					map[x][y] = ch;
+					flag = false;
+				}
+			}
+			queue.dequeue();
+			queue=updateInput();
 		}
-		
 	}
 
 	public void displayTimer(int time) {
@@ -134,11 +131,15 @@ public class Board {
 	}
 
 	public void printMap() {
-		for (int y = 0; y < map.length; y++) {
-			for (int x = 0; x < map[y].length; x++) {
-				char c = map[y][x];
+		for (int y = 0; y < map[0].length; y++) {
+			for (int x = 0; x < map.length; x++) {
+				char c = map[x][y];
 				if (c == '\u0000') c = ' ';
-				cn.getTextWindow().output(x, y, c);
+				Color fg = Color.BLACK;
+				Color bg = Color.WHITE;
+				if (c == 'P' || c == '@') fg = Color.BLUE;
+				if (c == 'C' || c == 'S') { fg = Color.WHITE; bg = Color.RED; }
+				cn.getTextWindow().output(x, y, c, new TextAttributes(fg, bg));
 			}
 		}
 	}
@@ -159,36 +160,33 @@ public class Board {
 		}
 		return queue;
 	}
+
 	public char[][] firstElements() {
 		char inp = ' ';
 		boolean flag =true;
 		Random rnd = new Random();
 		
-			int a = rnd.nextInt(100) + 1;
-			if (a >= 1 && a <= 50) {
-				inp = '1';
-			} else if (a >= 51 && a <= 75) {
-				inp = '2';
-			} else if (a >= 76 && a <= 88) {
-				inp = '3';
-			} else if (a >= 89 && a <= 97) {
-				inp = '@';
-			} else {
-				inp = 'S';
-				srob++;
+		int a = rnd.nextInt(100) + 1;
+		if (a >= 1 && a <= 50) {
+			inp = '1';
+		} else if (a >= 51 && a <= 75) {
+			inp = '2';
+		} else if (a >= 76 && a <= 88) {
+			inp = '3';
+		} else if (a >= 89 && a <= 97) {
+			inp = '@';
+		} else {
+			inp = 'S';
+			srob++;
+		}
+		while(flag) {
+			int x = rnd.nextInt(map.length);
+			int y = rnd.nextInt(map[0].length);
+			if(map[x][y] == ' ') {
+				map[x][y] = inp;
+				flag = false;
 			}
-			while(flag) {
-		        int x = rnd.nextInt(55);
-		        int y = rnd.nextInt(23);
-		        if(map[y][x] == ' ') {
-		           map[y][x] = inp;
-		           
-		            flag = false;
-		        }
-		        
-		    }
-		
+		}
 		return map;
 	}
-	
 }
