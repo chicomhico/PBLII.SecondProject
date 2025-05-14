@@ -81,6 +81,7 @@ public class Player {
                 Color bg = Color.BLACK;
                 if (c == '@') fg = Color.BLUE;
                 if (c == 'C' || c == 'S') { fg = Color.WHITE; bg = Color.RED; }
+                if (c == '#') {fg=Color.BLACK;bg=Color.WHITE;}
                 cn.getTextWindow().output(xx, yy, c, new TextAttributes(fg, bg));
             }
         }
