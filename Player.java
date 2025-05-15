@@ -8,7 +8,7 @@ public class Player {
     private int energy=1000;
     private int life=500;
     private int trap=0;
-    private int score = 0;
+    private int human_score = 0;
     
     char symbol = 'P';
 
@@ -103,30 +103,30 @@ public class Player {
     	game.cn.getTextWindow().setCursorPosition(62, 13);
     	System.out.print("Trap   : " + trap);
     	game.cn.getTextWindow().setCursorPosition(62, 14);
-    	System.out.print("Score  : "+ score);
+    	System.out.print("Score  : "+ human_score);
     	
     	game.cn.getTextWindow().setCursorPosition(61, 17);
     	System.out.print("---Computer---");
     	game.cn.getTextWindow().setCursorPosition(62, 18);
     	System.out.print("S Robot : " + game.board.srob );
     	game.cn.getTextWindow().setCursorPosition(62, 19);
-    	System.out.print("Score   : " + life );
+    	System.out.print("Score   : " + game.computer.computer_score);
     	game.cn.getTextWindow().output(0, 0, '#');//önemli engigma hatasını çözüyor
     }
     private void updatePlayer() {
     	if (game.board.map[y][x]=='1') {
 			energy+=50;
-			score+=1;
+			human_score+=1;
 			game.board.map[y][x]= ' ';
 		}
     	if (game.board.map[y][x]=='2') {
 			energy+=150;
-			score+=4;
+			human_score+=4;
 			game.board.map[y][x]= ' ';
 		}
     	if (game.board.map[y][x]=='3') {
 			energy+=250;
-			score+=16;
+			human_score+=16;
 			game.board.map[y][x]= ' ';
 		}
     	if (game.board.map[y][x]=='S') {
@@ -135,10 +135,9 @@ public class Player {
 		}
     	if (game.board.map[y][x]=='@') {
 			trap++;
-			score+=50;
+			human_score+=50;
 			game.board.map[y][x]= ' ';
 		}
     }
 
 }
-
