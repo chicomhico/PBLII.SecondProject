@@ -8,7 +8,8 @@ public class Player {
     private int energy=1000;
     private int life=500;
     private int trap=0;
-    private int human_score = 0;
+    private int score = 0;
+    private static  Trap[] traps = new Trap[50];
     
     char symbol = 'P';
 
@@ -103,30 +104,30 @@ public class Player {
     	game.cn.getTextWindow().setCursorPosition(62, 13);
     	System.out.print("Trap   : " + trap);
     	game.cn.getTextWindow().setCursorPosition(62, 14);
-    	System.out.print("Score  : "+ human_score);
+    	System.out.print("Score  : "+ score);
     	
     	game.cn.getTextWindow().setCursorPosition(61, 17);
     	System.out.print("---Computer---");
     	game.cn.getTextWindow().setCursorPosition(62, 18);
     	System.out.print("S Robot : " + game.board.srob );
     	game.cn.getTextWindow().setCursorPosition(62, 19);
-    	System.out.print("Score   : " + game.computer.computer_score);
+    	System.out.print("Score   : " + life );
     	game.cn.getTextWindow().output(0, 0, '#');//önemli engigma hatasını çözüyor
     }
     private void updatePlayer() {
     	if (game.board.map[y][x]=='1') {
 			energy+=50;
-			human_score+=1;
+			score+=1;
 			game.board.map[y][x]= ' ';
 		}
     	if (game.board.map[y][x]=='2') {
 			energy+=150;
-			human_score+=4;
+			score+=4;
 			game.board.map[y][x]= ' ';
 		}
     	if (game.board.map[y][x]=='3') {
 			energy+=250;
-			human_score+=16;
+			score+=16;
 			game.board.map[y][x]= ' ';
 		}
     	if (game.board.map[y][x]=='S') {
@@ -134,10 +135,67 @@ public class Player {
 			game.board.map[y][x]= ' ';
 		}
     	if (game.board.map[y][x]=='@') {
+    		traps[trap] = new Trap();
 			trap++;
-			human_score+=50;
+			score+=50;
 			game.board.map[y][x]= ' ';
 		}
     }
 
+    boolean placed = false;
+    boolean pressedSpace = false;
+    long[] trapTimes = new long[50];
+    Coordinate[] trapPositions = new Coordinate[1000]; 
+
+    public void PlaceTrap() {
+        if (rkey == KeyEvent.VK_SPACE) {
+            if (!pressedSpace && !placed && trap != 0) {
+                placed = true;
+                int index = trap - 1;
+                traps[index].Place(y, x);
+                game.board.map[y][x] = '=';
+
+                trapPositions[index] = new Coordinate(x, y);
+                trapTimes[index] = System.currentTimeMillis();
+
+                trap--;
+            }
+            pressedSpace = true;
+        } else {
+            pressedSpace = false;
+            placed = false;
+        }
+    }
+    public void updateTraps() {
+        long now = System.currentTimeMillis();
+
+        for (int i = 0; i < traps.length; i++) {
+            if (trapTimes[i] != 0 && now - trapTimes[i] >= 10000) {
+                Coordinate trapCoor = trapPositions[i];
+                if (trapCoor != null) {
+                    int cx = trapCoor.x;
+                    int cy = trapCoor.y;
+                    
+                    for (int dy = -1; dy <= 1; dy++) {
+                        for (int dx = -1; dx <= 1; dx++) {
+                            int nx = cx + dx;
+                            int ny = cy + dy;
+                            
+                            
+                            if (ny >= 0 && ny < game.board.map.length &&
+                                nx >= 0 && nx < game.board.map[0].length && 
+                                game.board.map[ny][nx] != 'C' && game.board.map[ny][nx] != 'P') {
+                                game.board.map[ny][nx] = ' '; 
+                            }
+                        }
+                    }
+
+                    trapTimes[i] = 0;
+                    trapPositions[i] = null;
+                }
+            }
+        }
+    }
+
 }
+
