@@ -184,7 +184,8 @@ public class Player {
                             
                             if (ny >= 0 && ny < game.board.map.length &&
                                 nx >= 0 && nx < game.board.map[0].length && 
-                                game.board.map[ny][nx] != 'C' && game.board.map[ny][nx] != 'P') {
+                                game.board.map[ny][nx] != 'C' && game.board.map[ny][nx] != 'P' &&
+			       game.board.map[ny][nx] != '#') {
                                 game.board.map[ny][nx] = ' '; 
                             }
                         }
