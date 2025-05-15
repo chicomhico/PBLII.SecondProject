@@ -13,7 +13,9 @@ public class NumberSnake {
 	Board board;
 	Player player;
 	Computer computer;
+	SnakeController snakecontroller;
 	public void main() throws Exception {
+		snakecontroller = new SnakeController(this);
 		board = new Board(this);
 		player = new Player(this);
 		mapData = board.CopyMap();
@@ -29,6 +31,7 @@ public class NumberSnake {
 			Boolean ismapchanged = player.TimeElapse(difference);
 			ismapchanged = ismapchanged || board.TimeElapse(difference);
 			ismapchanged = ismapchanged || computer.TimeElapse(difference);
+			ismapchanged = ismapchanged || snakecontroller.TimeElapse(difference);
 			if (ismapchanged) {
 				drawAll();
 			}
@@ -85,6 +88,7 @@ public class NumberSnake {
         }
         cn.getTextWindow().output(player.x, player.y, player.symbol);
         cn.getTextWindow().output(computer.current.y, computer.current.x, 'C');
+        snakecontroller.PrintSnakes();
         cn.getTextWindow().output(55, 23, ' ');
     }
 
