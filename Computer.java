@@ -31,24 +31,27 @@ public class Computer {
 		Coordinate currentCoordinate = new Coordinate(current.x, current.y);
 		while(currentCoordinate.x != targetCoordinate.x ||currentCoordinate.y != targetCoordinate.y) {
 			currentCoordinate = new Coordinate(currentCoordinate.x, currentCoordinate.y);
-			if(game.isAvailableToMove(new Coordinate(currentCoordinate.x + 1,currentCoordinate.y)) && 
+			if(game.isAvailableToMove(new Coordinate(currentCoordinate.x ,currentCoordinate.y + 1)) && 
+					!isvisited[currentCoordinate.x][currentCoordinate.y + 1]) {
+				currentCoordinate.y++;
+				path.Push(currentCoordinate);
+			}
+			else if(game.isAvailableToMove(new Coordinate(currentCoordinate.x + 1,currentCoordinate.y)) && 
 					!isvisited[currentCoordinate.x + 1][currentCoordinate.y]) {
 				currentCoordinate.x++;
 				path.Push(currentCoordinate);
 			}
+			
 			else if(game.isAvailableToMove(new Coordinate(currentCoordinate.x ,currentCoordinate.y - 1)) && 
 					!isvisited[currentCoordinate.x][currentCoordinate.y - 1]) {
 				currentCoordinate.y--;		
 				path.Push(currentCoordinate);
 			}
+			
+			
 			else if(game.isAvailableToMove(new Coordinate(currentCoordinate.x - 1,currentCoordinate.y)) &&
 					!isvisited[currentCoordinate.x - 1][currentCoordinate.y]) {
 				currentCoordinate.x--;
-				path.Push(currentCoordinate);
-			}
-			else if(game.isAvailableToMove(new Coordinate(currentCoordinate.x ,currentCoordinate.y + 1)) && 
-					!isvisited[currentCoordinate.x][currentCoordinate.y + 1]) {
-				currentCoordinate.y++;
 				path.Push(currentCoordinate);
 			}
 			

@@ -136,8 +136,12 @@ public class Board {
 		        } else {
 		            ch = obj.toString().charAt(0);
 		        }
-		        if(ch=='S') srob++; 
-		        map[y][x] = ch;
+		        if(ch=='S') {
+		        	game.snakecontroller.AddSnake(new Coordinate(x, y));
+		        	srob++;
+		        } 
+		        else
+		        	map[y][x] = ch;
 		        flag = false;
 		    }
 		  
@@ -199,7 +203,10 @@ public class Board {
 		        int x = rnd.nextInt(55);
 		        int y = rnd.nextInt(23);
 		        if(map[y][x] == ' ') {
-		           map[y][x] = inp;
+		        	if (inp == 'S')
+		        		game.snakecontroller.AddSnake(new Coordinate(x, y));
+		        	else
+		        		map[y][x] = inp;
 		           
 		            flag = false;
 		        }
