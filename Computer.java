@@ -15,6 +15,7 @@ public class Computer {
 	private Stack memoryStack = new Stack(1000);
 	private int timer = 0;
 	private boolean[][] isvisited = new boolean[23][55];
+	public int computer_score = 0;
 	public boolean TimeElapse(long elapsedtime) {
 		timer += elapsedtime;
 		if (timer > 400) {
@@ -62,6 +63,23 @@ public class Computer {
 					currentCoordinate = (Coordinate)path.Peek();
 			}
 			isvisited[currentCoordinate.x][currentCoordinate.y] = true; 
+			
+			if(game.board.map[currentCoordinate.x][currentCoordinate.y] == '1') {
+				computer_score += 1;
+				game.board.map[currentCoordinate.x][currentCoordinate.y] = ' ';
+			}
+			else if(game.board.map[currentCoordinate.x][currentCoordinate.y] == '2') {
+				computer_score += 4;
+				game.board.map[currentCoordinate.x][currentCoordinate.y] = ' ';
+			}
+			else if(game.board.map[currentCoordinate.x][currentCoordinate.y] == '3') {
+				computer_score += 16;
+				game.board.map[currentCoordinate.x][currentCoordinate.y] = ' ';
+			}
+			else if(game.board.map[currentCoordinate.x][currentCoordinate.y] == '@') {
+				computer_score += 50;
+				game.board.map[currentCoordinate.x][currentCoordinate.y] = ' ';
+			}
 		}
 		CurrentPath = path;
 		ClearLastPath();
