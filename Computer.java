@@ -23,6 +23,22 @@ public class Computer {
 			PlayMove();
 			if (game.board.map[current.x][current.y] == '·')
 				game.board.map[current.x][current.y] = ' ';
+			if(game.board.map[current.x][current.y] == '1') {
+				computer_score += 1;
+				game.board.map[current.x][current.y] = ' ';
+			}
+			else if(game.board.map[current.x][current.y] == '2') {
+				computer_score += 4;
+				game.board.map[current.x][current.y] = ' ';
+			}
+			else if(game.board.map[current.x][current.y] == '3') {
+				computer_score += 16;
+				game.board.map[current.x][current.y] = ' ';
+			}
+			else if(game.board.map[current.x][current.y] == '@') {
+				computer_score += 50;
+				game.board.map[current.x][current.y] = ' ';
+			}
 			return true;
 		}
 		return false;
@@ -64,22 +80,6 @@ public class Computer {
 			}
 			isvisited[currentCoordinate.x][currentCoordinate.y] = true; 
 			
-			if(game.board.map[currentCoordinate.x][currentCoordinate.y] == '1') {
-				computer_score += 1;
-				game.board.map[currentCoordinate.x][currentCoordinate.y] = ' ';
-			}
-			else if(game.board.map[currentCoordinate.x][currentCoordinate.y] == '2') {
-				computer_score += 4;
-				game.board.map[currentCoordinate.x][currentCoordinate.y] = ' ';
-			}
-			else if(game.board.map[currentCoordinate.x][currentCoordinate.y] == '3') {
-				computer_score += 16;
-				game.board.map[currentCoordinate.x][currentCoordinate.y] = ' ';
-			}
-			else if(game.board.map[currentCoordinate.x][currentCoordinate.y] == '@') {
-				computer_score += 50;
-				game.board.map[currentCoordinate.x][currentCoordinate.y] = ' ';
-			}
 		}
 		CurrentPath = path;
 		ClearLastPath();
