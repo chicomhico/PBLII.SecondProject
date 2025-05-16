@@ -28,28 +28,40 @@ public class Snake {
 	public Coordinate GetMoveRequest() {
 		if (target == null)
 			FindRandomTarget();
-		if (randommove == 0) {
-			int difference = Sign(target.x-current.x);
-			if (difference == 0) {
-				difference = Sign(target.y-current.y);
-				moveinprocess = new Coordinate(0, difference);
+		if (lastmove != null) {
+			if (randommove == 0) {
+				int difference = Sign(target.x-current.x);
+				if (difference == 0) {
+					difference = Sign(target.y-current.y);
+					moveinprocess = new Coordinate(0, difference);
+					return moveinprocess;
+				}
+				moveinprocess = new Coordinate(difference, 0);
 				return moveinprocess;
 			}
-			moveinprocess = new Coordinate(difference, 0);
+			int randomnumber = random.nextInt(100);
+			if (randomnumber < 80 && !decidetoturn && lastmove != null) {
+				moveinprocess = lastmove.Copy();
+				return moveinprocess;
+			}
+			decidetoturn = true;
+			randomnumber = random.nextInt(100);
+			if (randomnumber < 50){
+				moveinprocess = lastmove.TurnRight();
+				return moveinprocess;
+			}
+			moveinprocess = lastmove.TurnLeft();
 			return moveinprocess;
 		}
-		int randomnumber = random.nextInt(100);
-		if (randomnumber < 80 && !decidetoturn && lastmove != null) {
-			moveinprocess = lastmove.Copy();
-			return moveinprocess;
-		}
-		decidetoturn = true;
-		randomnumber = random.nextInt(100);
-		if (randomnumber < 50){
-			moveinprocess = lastmove.TurnRight();
-			return moveinprocess;
-		}
-		moveinprocess = lastmove.TurnLeft();
+		int randomint = random.nextInt(4);
+		if (randomint == 0)
+			moveinprocess = new Coordinate(0, 1);
+		if (randomint == 1)
+			moveinprocess = new Coordinate(0, -1);
+		if (randomint == 2)
+			moveinprocess = new Coordinate(1, 0);
+		if (randomint == 3)
+			moveinprocess = new Coordinate(-1, 0);
 		return moveinprocess;
 	}
 	public void AcceptRequest() {
