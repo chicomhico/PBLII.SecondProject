@@ -87,6 +87,13 @@ public class Computer {
 	private void PlayMove() {
 		if (!(game.board.map[target.x][target.y] == '1' || game.board.map[target.x][target.y] == '2' 
 				|| game.board.map[target.x][target.y] == '3') || CurrentPath.isEmpty()) {
+			while(!CurrentPath.isEmpty()) {
+				Coordinate coord = (Coordinate) CurrentPath.Pop();
+				if (game.board.map[coord.x][coord.y] == '·') {
+					game.board.map[coord.x][coord.y] = ' ';
+				}
+				memoryStack.Push(coord);
+			}
 			findRandomTarget();
 			findPath(target);
 		}

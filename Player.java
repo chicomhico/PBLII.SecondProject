@@ -5,7 +5,7 @@ import java.awt.event.KeyListener;
 public class Player {
 	public NumberSnake game;
     private KeyListener klis;
-    private int energy=1000;
+    private int energy=10000;
     private int life=500;
     private int trap=0;
     private int score = 0;
@@ -39,13 +39,13 @@ public class Player {
     	timer += elapsedtime;
 		if (energy > 0) {
 			timer += elapsedtime;
-			energy -= elapsedtime;
+			//energy -= elapsedtime;
 			if (energy < 0)
 				energy = 0;
 		}
 		Interface();
-		if (timer > 400) {
-			timer -= 100;
+		if (timer > 200) {
+			timer -= 200;
 			return update();
 		}
 		return false;
@@ -55,7 +55,7 @@ public class Player {
     	boolean result = false;
         if (keypr == 1) {
         	if(energy>0) {
-            	energy-=20;
+            	energy-=200;
             	if(energy<0)energy=0;
             }
         	game.cn.getTextWindow().output(x, y, game.board.map[y][x]);
@@ -98,7 +98,7 @@ public class Player {
     	game.cn.getTextWindow().setCursorPosition(61, 10);
     	System.out.print("---Player---");
     	game.cn.getTextWindow().setCursorPosition(62, 11);
-    	System.out.print("Energy : " + energy );
+    	System.out.print("Energy : " + energy/10 + "   " );
     	game.cn.getTextWindow().setCursorPosition(62, 12);
     	System.out.print("Life   : " + life );
     	game.cn.getTextWindow().setCursorPosition(62, 13);
@@ -116,22 +116,22 @@ public class Player {
     }
     private void updatePlayer() {
     	if (game.board.map[y][x]=='1') {
-			energy+=50;
+			energy+=500;
 			score+=1;
 			game.board.map[y][x]= ' ';
 		}
     	if (game.board.map[y][x]=='2') {
-			energy+=150;
+			energy+=1500;
 			score+=4;
 			game.board.map[y][x]= ' ';
 		}
     	if (game.board.map[y][x]=='3') {
-			energy+=250;
+			energy+=2500;
 			score+=16;
 			game.board.map[y][x]= ' ';
 		}
     	if (game.board.map[y][x]=='S') {
-			energy+=500;
+			energy+=5000;
 			game.board.map[y][x]= ' ';
 		}
     	if (game.board.map[y][x]=='@') {

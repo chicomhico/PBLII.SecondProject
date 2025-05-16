@@ -40,7 +40,7 @@ public class Snake {
 				return moveinprocess;
 			}
 			int randomnumber = random.nextInt(100);
-			if (randomnumber < 80 && !decidetoturn && lastmove != null) {
+			if ((randomnumber < 80 && !decidetoturn && lastmove != null)||randomnumber < 1) {
 				moveinprocess = lastmove.Copy();
 				return moveinprocess;
 			}
