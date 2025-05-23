@@ -4,16 +4,25 @@ package pbb_project2;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-
+import java.util.LinkedList;
 import java.util.Random;
+import java.util.prefs.NodeChangeEvent;
 
 public class Board {
-	public char[][] map; // sadece treasure kullanılmamış trap ve duvarlar
+	private char[][] map; // sadece treasure kullanılmamış trap ve duvarlar
+	int maplengtfirst;
+	int maplengtsecond;
 	public Queue queue = new Queue(100);
 	public int srob=0;
 	private long timer;
 	
 	private NumberSnake game;
+	public char GetCoor(Coordinate coor) {
+		return map[coor.y][coor.x];
+	}
+	public void SetCoor(Coordinate coor, char set) {
+		map[coor.y][coor.x] = set;
+	}
 
 	public Board(NumberSnake game) {
 		this.game = game;
@@ -30,17 +39,6 @@ public class Board {
 			return true;
 		}
 		return false;
-	}
-	public char[][] CopyMap(){
-		char[][] result = new char[game.board.map.length][];
-		for (int yy = 0; yy < game.board.map.length; yy++) {
-			char[] toadd = new char[game.board.map[yy].length];
-            for (int xx = 0; xx < game.board.map[yy].length; xx++) {
-                toadd[xx] = map[yy][xx];
-            }
-            result[yy] = toadd;
-        }
-		return result;
 	}
 	private void loadMap(String fileName) {
 		map = null;
@@ -83,6 +81,8 @@ public class Board {
 		for(int i=0;i<30;i++) {
 			map=firstElements();
 		}
+		maplengtfirst = map.length;
+		maplengtsecond = map[0].length;
 	}
 
 	private void inputQueue() {

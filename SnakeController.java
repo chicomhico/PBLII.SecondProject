@@ -10,12 +10,12 @@ public class SnakeController {
 	}
 	public void PrintSnakes() {
 		for (int i = 0; i < top; i++) {
-			game.cn.getTextWindow().output(snakes[i].current.y, snakes[i].current.x, 'S');
+			game.cn.getTextWindow().output(snakes[i].current.x, snakes[i].current.y, 'S');
 		}
 	}
 	public boolean ContainCoordinate(Coordinate coordinate) {
 		for (int i = 0; i < top; i++) {
-			if (coordinate.x == snakes[i].current.y && coordinate.y == snakes[i].current.x)
+			if (coordinate.x == snakes[i].current.x && coordinate.y == snakes[i].current.y)
 				return true;
 		}
 		return false;
@@ -31,7 +31,7 @@ public class SnakeController {
 		return false;
 	}
 	public void AddSnake(Coordinate location) {
-		snakes[top] = new Snake(new Coordinate(location.y, location.x), this); 
+		snakes[top] = new Snake(new Coordinate(location.x, location.y), this); 
 		top++;
 	}
 	private void Playmove() {

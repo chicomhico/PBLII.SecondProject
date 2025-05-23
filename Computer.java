@@ -14,30 +14,30 @@ public class Computer {
 	private Stack CurrentPath = new Stack(100000);
 	private Stack memoryStack = new Stack(1000);
 	private int timer = 0;
-	private boolean[][] isvisited = new boolean[23][55];
+	private boolean[][] isvisited = new boolean[55][23];
 	public int computer_score = 0;
 	public boolean TimeElapse(long elapsedtime) {
 		timer += elapsedtime;
 		if (timer > 400) {
 			timer -= 400;
 			PlayMove();
-			if (game.board.map[current.x][current.y] == '·')
-				game.board.map[current.x][current.y] = ' ';
-			if(game.board.map[current.x][current.y] == '1') {
+			if (game.board.GetCoor(current) == '·')
+				game.board.SetCoor(current, ' ');
+			if(game.board.GetCoor(current) == '1') {
 				computer_score += 1;
-				game.board.map[current.x][current.y] = ' ';
+				game.board.SetCoor(current, ' ');
 			}
-			else if(game.board.map[current.x][current.y] == '2') {
+			else if(game.board.GetCoor(current) == '2') {
 				computer_score += 4;
-				game.board.map[current.x][current.y] = ' ';
+				game.board.SetCoor(current, ' ');
 			}
-			else if(game.board.map[current.x][current.y] == '3') {
+			else if(game.board.GetCoor(current) == '3') {
 				computer_score += 16;
-				game.board.map[current.x][current.y] = ' ';
+				game.board.SetCoor(current, ' ');
 			}
-			else if(game.board.map[current.x][current.y] == '@') {
+			else if(game.board.GetCoor(current) == '@') {
 				computer_score += 50;
-				game.board.map[current.x][current.y] = ' ';
+				game.board.SetCoor(current, ' ');
 			}
 			return true;
 		}
@@ -48,29 +48,28 @@ public class Computer {
 		Coordinate currentCoordinate = new Coordinate(current.x, current.y);
 		while(currentCoordinate.x != targetCoordinate.x ||currentCoordinate.y != targetCoordinate.y) {
 			currentCoordinate = new Coordinate(currentCoordinate.x, currentCoordinate.y);
-			if(game.isAvailableToMove(new Coordinate(currentCoordinate.x ,currentCoordinate.y + 1)) && 
-					!isvisited[currentCoordinate.x][currentCoordinate.y + 1]) {
-				currentCoordinate.y++;
-				path.Push(currentCoordinate);
-			}
-			else if(game.isAvailableToMove(new Coordinate(currentCoordinate.x + 1,currentCoordinate.y)) && 
+			if(game.isAvailableToMove(new Coordinate(currentCoordinate.x + 1,currentCoordinate.y)) && 
 					!isvisited[currentCoordinate.x + 1][currentCoordinate.y]) {
 				currentCoordinate.x++;
 				path.Push(currentCoordinate);
 			}
-			
-			else if(game.isAvailableToMove(new Coordinate(currentCoordinate.x ,currentCoordinate.y - 1)) && 
-					!isvisited[currentCoordinate.x][currentCoordinate.y - 1]) {
-				currentCoordinate.y--;		
+			else if(game.isAvailableToMove(new Coordinate(currentCoordinate.x ,currentCoordinate.y + 1)) && 
+					!isvisited[currentCoordinate.x][currentCoordinate.y + 1]) {
+				currentCoordinate.y++;		
 				path.Push(currentCoordinate);
 			}
-			
-			
 			else if(game.isAvailableToMove(new Coordinate(currentCoordinate.x - 1,currentCoordinate.y)) &&
 					!isvisited[currentCoordinate.x - 1][currentCoordinate.y]) {
 				currentCoordinate.x--;
 				path.Push(currentCoordinate);
 			}
+			else if(game.isAvailableToMove(new Coordinate(currentCoordinate.x ,currentCoordinate.y - 1)) && 
+					!isvisited[currentCoordinate.x][currentCoordinate.y - 1]) {
+				currentCoordinate.y--;
+				path.Push(currentCoordinate);
+			}
+			
+			
 			
 			// etrafındaki tüm kareler ya duvar ya da daha önce o kareden geçmişse else'e giriyor
 			else {
@@ -85,12 +84,12 @@ public class Computer {
 		ClearLastPath();
 	}
 	private void PlayMove() {
-		if (!(game.board.map[target.x][target.y] == '1' || game.board.map[target.x][target.y] == '2' 
-				|| game.board.map[target.x][target.y] == '3') || CurrentPath.isEmpty()) {
+		if (!(game.board.GetCoor(target) == '1' || game.board.GetCoor(target) == '2' 
+				|| game.board.GetCoor(target) == '3') || CurrentPath.isEmpty()) {
 			while(!CurrentPath.isEmpty()) {
 				Coordinate coord = (Coordinate) CurrentPath.Pop();
-				if (game.board.map[coord.x][coord.y] == '·') {
-					game.board.map[coord.x][coord.y] = ' ';
+				if (game.board.GetCoor(coord) == '·') {
+					game.board.SetCoor(coord, ' ');
 				}
 				memoryStack.Push(coord);
 			}
@@ -104,7 +103,7 @@ public class Computer {
 			memoryStack.Push(last);
 		}
 		
-		if(game.board.map[last.x][last.y] != '#') {
+		if(game.isAvailableToMove(last)) {
 			memoryStack.Pop();
 			current = last; 
 		}
@@ -115,8 +114,8 @@ public class Computer {
 		
 		while(!CurrentPath.isEmpty()) {
 			Coordinate coord = (Coordinate) CurrentPath.Pop();
-			if (game.board.map[coord.x][coord.y] == ' ') {
-				game.board.map[coord.x][coord.y] = '·';
+			if (game.board.GetCoor(coord) == ' ') {
+				game.board.SetCoor(coord, '·');
 			}
 			memoryStack.Push(coord);
 		}
@@ -131,11 +130,11 @@ public class Computer {
 		boolean isFound = false;
 		
 		while(!isFound) {
-			target.x = random.nextInt(23);
-			target.y = random.nextInt(55);
+			target.x = random.nextInt(55);
+			target.y = random.nextInt(23);
 			
-			if(game.board.map[target.x][target.y] == '1' || game.board.map[target.x][target.y] == '2' 
-					|| game.board.map[target.x][target.y] == '3') {
+			if(game.board.GetCoor(target) == '1' || game.board.GetCoor(target) == '2' 
+					|| game.board.GetCoor(target) == '3') {
 				isFound = true;
 			}
 		}

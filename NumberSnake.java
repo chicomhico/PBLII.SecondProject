@@ -9,7 +9,6 @@ public class NumberSnake {
 	public enigma.console.Console cn = Enigma.getConsole("Number Snakes",100,30,24,1);
 	static int lastProcessedTime = -1;
 	public static double timerCounter = 0;
-	public char[][] mapData;
 	Board board;
 	Player player;
 	Computer computer;
@@ -18,7 +17,6 @@ public class NumberSnake {
 		snakecontroller = new SnakeController(this);
 		board = new Board(this);
 		player = new Player(this);
-		mapData = board.CopyMap();
 		boolean flag = true;
 		computer = new Computer(new Coordinate(4, 4),this);
 		long previoustime = System.currentTimeMillis();
@@ -72,22 +70,20 @@ public class NumberSnake {
 		}*/
 	}
 	public boolean isAvailableToMove(Coordinate coordinate) {
-		if (board.map[coordinate.x][coordinate.y] == '#')
+		if (board.GetCoor(coordinate) == '#')
 			return false;
-		if (coordinate.x == player.x && coordinate.y == player.y)
+		if (coordinate.x == player.position.x && coordinate.y == player.position.y)
 			return false;
 		if (coordinate.x == computer.current.x && coordinate.y == computer.current.y)
+			return false;
+		if (snakecontroller.ContainCoordinate(coordinate))
 			return false;
 		return true;
 	}
 	public void drawAll() {
-        for (int yy = 0; yy < board.map.length; yy++) {
-            for (int xx = 0; xx < board.map[yy].length; xx++) {
-                cn.getTextWindow().output(xx, yy, board.map[yy][xx]);
-            }
-        }
-        cn.getTextWindow().output(player.x, player.y, player.symbol);
-        cn.getTextWindow().output(computer.current.y, computer.current.x, 'C');
+        board.printMap();
+        cn.getTextWindow().output(player.position.x, player.position.y, player.symbol);
+        cn.getTextWindow().output(computer.current.x, computer.current.y, 'C');
         snakecontroller.PrintSnakes();
         cn.getTextWindow().output(55, 23, ' ');
     }

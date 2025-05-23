@@ -76,12 +76,12 @@ public class Snake {
 		boolean isFound = false;
 		if (controller.game.board != null) {
 			while(!isFound) {
-				target.x = random.nextInt(23);
-				target.y = random.nextInt(55);
+				target.x = random.nextInt(55);
+				target.y = random.nextInt(23);
 				
-				if(controller.game.board.map[target.x][target.y] == '1' 
-						|| controller.game.board.map[target.x][target.y] == '2' 
-						|| controller.game.board.map[target.x][target.y] == '3') {
+				if(controller.game.board.GetCoor(target) == '1' 
+						|| controller.game.board.GetCoor(target) == '2' 
+						|| controller.game.board.GetCoor(target) == '3') {
 					isFound = true;
 				}
 			}

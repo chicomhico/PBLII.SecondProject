@@ -16,11 +16,12 @@ public class Player {
     int keypr = 0;
     int rkey;
 
-    int x = 5, y = 5;
+    Coordinate position;
     
     long timer = 0;
 
     public Player(NumberSnake game) throws Exception {
+    	position = new Coordinate(5, 5);
     	this.game = game;
         klis = new KeyListener() {
             public void keyTyped(KeyEvent e) {}
@@ -33,7 +34,7 @@ public class Player {
             public void keyReleased(KeyEvent e) {}
         };
         game.cn.getTextWindow().addKeyListener(klis);
-        game.cn.getTextWindow().output(x, y, symbol);
+        game.cn.getTextWindow().output(position.x, position.y, symbol);
     }
     public boolean TimeElapse(long elapsedtime) {
     	timer += elapsedtime;
@@ -58,27 +59,27 @@ public class Player {
             	energy-=200;
             	if(energy<0)energy=0;
             }
-        	game.cn.getTextWindow().output(x, y, game.board.map[y][x]);
-            int newX = x, newY = y;
-            if (rkey == KeyEvent.VK_LEFT && canMove(x - 1, y)) {
+        	game.cn.getTextWindow().output(position.x, position.y, game.board.GetCoor(position));
+            int newX = position.x, newY = position.y;
+            if (rkey == KeyEvent.VK_LEFT && canMove(position.x - 1, position.y)) {
             	newX--;
             	result = true;
             }
-            if (rkey == KeyEvent.VK_RIGHT && canMove(x + 1, y)) {
+            if (rkey == KeyEvent.VK_RIGHT && canMove(position.x + 1, position.y)) {
             	newX++;
             	result = true;
             }
-            if (rkey == KeyEvent.VK_UP && canMove(x, y - 1)) {
+            if (rkey == KeyEvent.VK_UP && canMove(position.x, position.y - 1)) {
             	newY--;
             	result = true;
             }
-            if (rkey == KeyEvent.VK_DOWN && canMove(x, y + 1)) {
+            if (rkey == KeyEvent.VK_DOWN && canMove(position.x, position.y + 1)) {
             	newY++;
             	result = true;
             }
-            game.cn.getTextWindow().output(x, y, symbol);
-            x = newX;
-            y = newY;
+            game.cn.getTextWindow().output(position.x, position.y, symbol);
+            position.x = newX;
+            position.y = newY;
             keypr = 0;
             updatePlayer();
         }
@@ -86,13 +87,14 @@ public class Player {
     }
 
     public boolean canMove(int newX, int newY) {
-        if (newX < 0 || newX >= game.board.map[0].length || newY < 0 || newY >= game.board.map.length) {
+        /*if (newX < 0 || newX >= game.board.map[0].length || newY < 0 || newY >= game.board.map.length) {
             return false;
         }
-        if (game.board.map[newY][newX] == '#') {
+        if (game.board.GetCoor(new Coordinate(newX, newY)) == '#') {
             return false;
         }
-        return true;
+        return true;*/
+    	return game.isAvailableToMove(new Coordinate(newX, newY));
     }
     public void Interface() {
     	game.cn.getTextWindow().setCursorPosition(61, 10);
@@ -115,30 +117,30 @@ public class Player {
     	game.cn.getTextWindow().output(0, 0, '#');//önemli engigma hatasını çözüyor
     }
     private void updatePlayer() {
-    	if (game.board.map[y][x]=='1') {
+    	if (game.board.GetCoor(position) =='1') {
 			energy+=500;
 			score+=1;
-			game.board.map[y][x]= ' ';
+			game.board.SetCoor(position, ' ');
 		}
-    	if (game.board.map[y][x]=='2') {
+    	if (game.board.GetCoor(position) =='2') {
 			energy+=1500;
 			score+=4;
-			game.board.map[y][x]= ' ';
+			game.board.SetCoor(position, ' ');
 		}
-    	if (game.board.map[y][x]=='3') {
+    	if (game.board.GetCoor(position) =='3') {
 			energy+=2500;
 			score+=16;
-			game.board.map[y][x]= ' ';
+			game.board.SetCoor(position, ' ');
 		}
-    	if (game.board.map[y][x]=='S') {
+    	if (game.board.GetCoor(position) =='S') {
 			energy+=5000;
-			game.board.map[y][x]= ' ';
+			game.board.SetCoor(position, ' ');
 		}
-    	if (game.board.map[y][x]=='@') {
+    	if (game.board.GetCoor(position) =='@') {
     		traps[trap] = new Trap();
 			trap++;
 			score+=50;
-			game.board.map[y][x]= ' ';
+			game.board.SetCoor(position, ' ');
 		}
     }
 
@@ -152,10 +154,10 @@ public class Player {
             if (!pressedSpace && !placed && trap != 0) {
                 placed = true;
                 int index = trap - 1;
-                traps[index].Place(y, x);
-                game.board.map[y][x] = '=';
+                traps[index].Place(position.y, position.x);
+                game.board.SetCoor(position, '=');
 
-                trapPositions[index] = new Coordinate(x, y);
+                trapPositions[index] = position.Copy();
                 trapTimes[index] = System.currentTimeMillis();
 
                 trap--;
@@ -180,13 +182,14 @@ public class Player {
                         for (int dx = -1; dx <= 1; dx++) {
                             int nx = cx + dx;
                             int ny = cy + dy;
+                            Coordinate tocheck = new Coordinate(nx, ny);
                             
                             
-                            if (ny >= 0 && ny < game.board.map.length &&
-                                nx >= 0 && nx < game.board.map[0].length && 
-                                game.board.map[ny][nx] != 'C' && game.board.map[ny][nx] != 'P' &&
-			       game.board.map[ny][nx] != '#') {
-                                game.board.map[ny][nx] = ' '; 
+                            if (ny >= 0 && ny < game.board.maplengtfirst &&
+                                nx >= 0 && nx < game.board.maplengtsecond && 
+                                game.board.GetCoor(tocheck) != 'C' && game.board.GetCoor(tocheck) != 'P' &&
+			       game.board.GetCoor(tocheck) != '#') {
+                                game.board.SetCoor(tocheck, ' '); 
                             }
                         }
                     }
