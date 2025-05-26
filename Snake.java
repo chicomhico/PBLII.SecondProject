@@ -25,6 +25,17 @@ public class Snake {
 			return -1;
 		return 0;
 	}
+	public boolean IsStuck() {
+		if (lastmove == null)
+			return false;
+		boolean result = !controller.game.isAvailableToMove(current.Add(lastmove));
+		result = result && !controller.game.isAvailableToMove(current.Add(lastmove.TurnLeft()));
+		result = result && !controller.game.isAvailableToMove(current.Add(lastmove.TurnRight()));
+		return result;
+	}
+	public void Reverse() {
+		lastmove = lastmove.Negate();
+	}
 	public Coordinate GetMoveRequest() {
 		if (target == null)
 			FindRandomTarget();

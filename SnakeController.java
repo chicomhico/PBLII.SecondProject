@@ -38,6 +38,9 @@ public class SnakeController {
 		for (int i = 0; i < top; i++) {
 			boolean flag = true;
 			while (flag) {
+				if (snakes[i].IsStuck()) {
+					snakes[i].Reverse();
+				}
 				Coordinate coordinate = snakes[i].GetMoveRequest();
 				if (game.isAvailableToMove(coordinate.Add(snakes[i].current))) {
 					snakes[i].AcceptRequest();

@@ -1,12 +1,15 @@
 package pbb_project2;
 
 
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.prefs.NodeChangeEvent;
+
+import enigma.console.TextAttributes;
 
 public class Board {
 	private char[][] map; // sadece treasure kullanılmamış trap ve duvarlar
@@ -157,11 +160,23 @@ public class Board {
 	}
 
 	public void printMap() {
+		//game.cn.getTextWindow().setCursorPosition(0, 0);
 		for (int y = 0; y < map.length; y++) {
 			for (int x = 0; x < map[y].length; x++) {
 				char c = map[y][x];
 				if (c == '\u0000') c = ' ';
-				game.cn.getTextWindow().output(x, y, c);
+				if (c == '#') {
+					TextAttributes ta = new TextAttributes(Color.blue, Color.green);
+					game.cn.getTextWindow().output(x, y, c, ta);
+				}
+				else if (c == '1' || c == '2' || c == '3'){
+					TextAttributes ta = new TextAttributes(Color.yellow, Color.black);
+					game.cn.getTextWindow().output(x, y, c, ta);
+				}
+				else {
+					TextAttributes ta = new TextAttributes(Color.white, Color.black);
+					game.cn.getTextWindow().output(x, y, c, ta);
+				}
 			}
 		}
 	}

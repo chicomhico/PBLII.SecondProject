@@ -34,7 +34,6 @@ public class Player {
             public void keyReleased(KeyEvent e) {}
         };
         game.cn.getTextWindow().addKeyListener(klis);
-        game.cn.getTextWindow().output(position.x, position.y, symbol);
     }
     public boolean TimeElapse(long elapsedtime) {
     	timer += elapsedtime;
@@ -59,7 +58,6 @@ public class Player {
             	energy-=200;
             	if(energy<0)energy=0;
             }
-        	game.cn.getTextWindow().output(position.x, position.y, game.board.GetCoor(position));
             int newX = position.x, newY = position.y;
             if (rkey == KeyEvent.VK_LEFT && canMove(position.x - 1, position.y)) {
             	newX--;
@@ -77,7 +75,6 @@ public class Player {
             	newY++;
             	result = true;
             }
-            game.cn.getTextWindow().output(position.x, position.y, symbol);
             position.x = newX;
             position.y = newY;
             keypr = 0;

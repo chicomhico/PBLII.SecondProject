@@ -1,6 +1,9 @@
 package pbb_project2;
 
 
+import java.awt.Color;
+
+import enigma.console.TextAttributes;
 import enigma.core.Enigma;
 
 public class NumberSnake {
@@ -82,8 +85,13 @@ public class NumberSnake {
 	}
 	public void drawAll() {
         board.printMap();
-        cn.getTextWindow().output(player.position.x, player.position.y, player.symbol);
-        cn.getTextWindow().output(computer.current.x, computer.current.y, 'C');
+        TextAttributes ta = new TextAttributes(Color.yellow, Color.red);
+        cn.getTextWindow().output(computer.GetTarget().x, computer.GetTarget().y
+        		, board.GetCoor(computer.GetTarget()), ta);
+        ta = new TextAttributes(Color.green, Color.black);
+        cn.getTextWindow().output(player.position.x, player.position.y, player.symbol, ta);
+        ta = new TextAttributes(Color.red, Color.black);
+        cn.getTextWindow().output(computer.current.x, computer.current.y, 'C', ta);
         snakecontroller.PrintSnakes();
         cn.getTextWindow().output(55, 23, ' ');
     }
