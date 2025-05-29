@@ -5,9 +5,7 @@ import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.Random;
-import java.util.prefs.NodeChangeEvent;
 
 import enigma.console.TextAttributes;
 
@@ -166,7 +164,7 @@ public class Board {
 				char c = map[y][x];
 				if (c == '\u0000') c = ' ';
 				if (c == '#') {
-					TextAttributes ta = new TextAttributes(Color.blue, Color.green);
+					TextAttributes ta = new TextAttributes(Color.blue, new Color(165,42,42));
 					game.cn.getTextWindow().output(x, y, c, ta);
 				}
 				else if (c == '1' || c == '2' || c == '3'){

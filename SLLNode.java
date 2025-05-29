@@ -1,9 +1,9 @@
 package pbb_project2;
 
 public class SLLNode {
-	Object data;
-	SLLNode nextnode;
-	public SLLNode(Object data) {
+	Coordinate data;
+	private SLLNode nextnode;
+	public SLLNode(Coordinate data) {
 		this.data = data;
 	}
 	public SLLNode GetNext() {

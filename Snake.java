@@ -7,6 +7,8 @@ public class Snake {
 	private boolean decidetoturn = false;
 	private int randommove = 0;
 	
+	SLL body = new SLL();
+	
 	private Coordinate moveinprocess;
 	private Coordinate lastmove;
 	private Coordinate target = new Coordinate(0,0);
@@ -33,9 +35,11 @@ public class Snake {
 		result = result && !controller.game.isAvailableToMove(current.Add(lastmove.TurnRight()));
 		return result;
 	}
-	public void Reverse() {
+	
+	public void Reverse() { //buraya reversenin kalanı
 		lastmove = lastmove.Negate();
 	}
+	
 	public Coordinate GetMoveRequest() {
 		if (target == null)
 			FindRandomTarget();
@@ -79,9 +83,15 @@ public class Snake {
 		decidetoturn = false;
 		lastmove = moveinprocess;
 		current = current.Add(lastmove);
+		//buraya yemesi ve bodynin ilerlemesi yapılacak
+	}
+	public void Collide(Snake snake) {
+		Coordinate collisioncoordinate = current.Add(moveinprocess);
+		//buraya tüm collisionlar
 	}
 	public void RejectRequest() {
-		randommove += 20;
+		if (randommove == 0)
+			randommove += 20;
 	}
 	private void FindRandomTarget() {
 		boolean isFound = false;

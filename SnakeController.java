@@ -17,6 +17,8 @@ public class SnakeController {
 		for (int i = 0; i < top; i++) {
 			if (coordinate.x == snakes[i].current.x && coordinate.y == snakes[i].current.y)
 				return true;
+			if (snakes[i].body.Contains(coordinate))
+				return true;
 		}
 		return false;
 	
@@ -34,6 +36,17 @@ public class SnakeController {
 		snakes[top] = new Snake(new Coordinate(location.x, location.y), this); 
 		top++;
 	}
+	private Snake IsFromAnotherSnake(Coordinate coordinate, Snake snake) {
+		for (int i = 0; i < top; i++) {
+			if (coordinate.x == snakes[i].current.x && coordinate.y == snakes[i].current.y)
+				if (snakes[i] != snake)
+					return snake;
+			if (snakes[i].body.Contains(coordinate))
+				if (snakes[i] != snake)
+					return snake;
+		}
+		return null;
+	}
 	private void Playmove() {
 		for (int i = 0; i < top; i++) {
 			boolean flag = true;
@@ -42,6 +55,11 @@ public class SnakeController {
 					snakes[i].Reverse();
 				}
 				Coordinate coordinate = snakes[i].GetMoveRequest();
+				Snake tocheck = IsFromAnotherSnake(coordinate.Add(snakes[i].current), snakes[i]);
+				if (tocheck != null) {
+					snakes[i].Collide(null);
+					flag = false;
+				}
 				if (game.isAvailableToMove(coordinate.Add(snakes[i].current))) {
 					snakes[i].AcceptRequest();
 					flag = false;
