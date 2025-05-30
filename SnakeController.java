@@ -36,6 +36,20 @@ public class SnakeController {
 		snakes[top] = new Snake(new Coordinate(location.x, location.y), this); 
 		top++;
 	}
+	private void DeleteSnake(int index) {
+		snakes[index] = snakes[top];
+		snakes[top] = null;
+		top--;
+	}
+	private void DeleteSnake(Snake snake) {
+		int index = 0;
+		while (snakes[index] != snake) {
+			index++;
+		}
+		snakes[index] = snakes[top];
+		snakes[top] = null;
+		top--;
+	}
 	private Snake IsFromAnotherSnake(Coordinate coordinate, Snake snake) {
 		for (int i = 0; i < top; i++) {
 			if (coordinate.x == snakes[i].current.x && coordinate.y == snakes[i].current.y)
@@ -57,7 +71,11 @@ public class SnakeController {
 				Coordinate coordinate = snakes[i].GetMoveRequest();
 				Snake tocheck = IsFromAnotherSnake(coordinate.Add(snakes[i].current), snakes[i]);
 				if (tocheck != null) {
-					snakes[i].Collide(null);
+					snakes[i].Collide(tocheck);
+					if(tocheck.Gettobedeleted()) 
+						DeleteSnake(tocheck);
+					if(snakes[i].Gettobedeleted()) 
+						DeleteSnake(i);
 					flag = false;
 				}
 				if (game.isAvailableToMove(coordinate.Add(snakes[i].current))) {

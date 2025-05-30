@@ -9,6 +9,8 @@ public class Snake {
 	
 	SLL body = new SLL();
 	
+	private boolean tobedeleted = false;
+	
 	private Coordinate moveinprocess;
 	private Coordinate lastmove;
 	private Coordinate target = new Coordinate(0,0);
@@ -19,6 +21,9 @@ public class Snake {
 		current = location.Copy();
 		this.controller = controller;
 		FindRandomTarget();
+	}
+	public boolean Gettobedeleted() {
+		return tobedeleted;
 	}
 	private static int Sign(int input) {
 		if (input > 0)
@@ -86,8 +91,25 @@ public class Snake {
 		//buraya yemesi ve bodynin ilerlemesi yapılacak
 	}
 	public void Collide(Snake snake) {
-		Coordinate collisioncoordinate = current.Add(moveinprocess);
-		//buraya tüm collisionlar
+Coordinate collisioncoordinate = current.Add(moveinprocess);
+		
+		if(snake.current.x == collisioncoordinate.x && snake.current.y == collisioncoordinate.y) {
+			tobedeleted = true;
+			snake.tobedeleted = true;
+			return;
+		}
+		
+		else if(snake.body.getData(collisioncoordinate) != null) {
+			if(snake.body.getData(collisioncoordinate).value == '1') {
+				//birleşme
+			}
+			else if(snake.body.getData(collisioncoordinate).value == '2' || snake.body.getData(collisioncoordinate).value == '3') {
+				// bölünme
+			}
+		}
+		
+		
+
 	}
 	public void RejectRequest() {
 		if (randommove == 0)

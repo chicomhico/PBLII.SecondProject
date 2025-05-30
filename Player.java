@@ -110,7 +110,7 @@ public class Player {
     	game.cn.getTextWindow().setCursorPosition(62, 18);
     	System.out.print("S Robot : " + game.board.srob );
     	game.cn.getTextWindow().setCursorPosition(62, 19);
-    	System.out.print("Score   : " + life );
+    	System.out.print("Score   : " + game.computer.computer_score );
     	game.cn.getTextWindow().output(0, 0, '#');//önemli engigma hatasını çözüyor
     }
     private void updatePlayer() {

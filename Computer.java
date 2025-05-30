@@ -15,7 +15,7 @@ public class Computer {
 	private Stack memoryStack = new Stack(1000);
 	private int timer = 0;
 	private boolean[][] isvisited = new boolean[55][23];
-	public int computer_score = 0;
+	public int computer_score = 200;
 	public Coordinate GetTarget() {
 		return target.Copy();
 	}

@@ -17,6 +17,19 @@ public class SLL {
 		nodetoadd.SetNext(headnode);
 		headnode = nodetoadd;
 	}
+	public SLLNode getData(Coordinate c) {
+		if (c == null)
+			return null;
+		SLLNode temp = headnode;
+		
+		while(temp != null) {
+			if(temp.data.x == c.x && temp.data.y == c.y) {
+				return temp;
+			}
+			temp = temp.GetNext();
+		}
+		return null;
+	}
 	public boolean Contains(SLLNode node) {
 		if (node == null)
 			return false;
