@@ -6,14 +6,14 @@ public class SLL {
 	public SLL() {
 		
 	}
-	public SLL(Coordinate headdata) {
-		headnode = new SLLNode(headdata);
+	public SLL(Coordinate headdata, char headvalue) {
+		headnode = new SLLNode(headdata, headvalue);
 	}
 	public SLL(SLLNode headnode) {
 		this.headnode = headnode;
 	}
-	public void Add(Coordinate data) {
-		SLLNode nodetoadd = new SLLNode(data);
+	public void Add(Coordinate data, char value) {
+		SLLNode nodetoadd = new SLLNode(data, value);
 		nodetoadd.SetNext(headnode);
 		headnode = nodetoadd;
 	}
