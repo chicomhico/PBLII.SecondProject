@@ -2,7 +2,7 @@ package pbb_project2;
 
 
 public class SLL {
-	private SLLNode headnode;
+	SLLNode headnode;
 	public SLL() {
 		
 	}
@@ -23,7 +23,7 @@ public class SLL {
 		SLLNode temp = headnode;
 		
 		while(temp != null) {
-			if(temp.data.x == c.x && temp.data.y == c.y) {
+			if(temp.location.x == c.x && temp.location.y == c.y) {
 				return temp;
 			}
 			temp = temp.GetNext();
@@ -46,7 +46,7 @@ public class SLL {
 			return false;
 		SLLNode activenode = headnode;
 		while (activenode != null) {
-			if (activenode.data.x == data.x && activenode.data.y == data.y)
+			if (activenode.location.x == data.x && activenode.location.y == data.y)
 				return true;
 			activenode = activenode.GetNext();
 		}
@@ -81,5 +81,25 @@ public class SLL {
 			if (activenode.GetNext() == null)
 				activenode.SetNext(other.headnode);
 		}
+	}
+	private SLLNode Reverseform() {
+		if (headnode == null) {
+			return null;
+		}
+		SLL result = new SLL();
+		SLLNode lastNode = null;
+		while(lastNode != headnode) {
+			SLLNode tocheck = headnode;
+			while(tocheck.GetNext() != lastNode) {
+				tocheck = tocheck.GetNext();
+			}
+			result.Add(tocheck.location, tocheck.value);
+			lastNode = tocheck;
+		}
+		result.Add(headnode.location, headnode.value);
+		return result.headnode;
+	}
+	public void Reverse() {
+		headnode = Reverseform();
 	}
 }

@@ -87,8 +87,27 @@ public class Snake {
 	public void AcceptRequest() {
 		decidetoturn = false;
 		lastmove = moveinprocess;
+		Coordinate tempp = current.Copy();
 		current = current.Add(lastmove);
 		//buraya yemesi ve bodynin ilerlemesi yapılacak
+		char currentdata = controller.game.board.GetCoor(current);
+		if (currentdata == '1' || currentdata == '2' || currentdata == '3') 
+		{
+			body.Add(tempp, currentdata);
+			controller.game.board.SetCoor(current, ' ');
+		}
+		else 
+		{
+			SLLNode toprocess = body.headnode;
+			Coordinate toassign = tempp;
+			while (toprocess != null) 
+			{
+				Coordinate temp = toprocess.location;
+				toprocess.location = toassign;
+				toassign = temp;
+				toprocess = toprocess.GetNext();
+			}
+		}
 	}
 	public void Collide(Snake snake) {
 Coordinate collisioncoordinate = current.Add(moveinprocess);

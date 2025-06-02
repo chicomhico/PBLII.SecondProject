@@ -1,11 +1,11 @@
 package pbb_project2;
 
 public class SLLNode {
-	Coordinate data;
+	Coordinate location;
 	char value;
 	private SLLNode nextnode;
 	public SLLNode(Coordinate data, char value) {
-		this.data = data;
+		this.location = data.Copy();
 		this.value = value;
 	}
 	public SLLNode GetNext() {

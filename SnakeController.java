@@ -11,6 +11,12 @@ public class SnakeController {
 	public void PrintSnakes() {
 		for (int i = 0; i < top; i++) {
 			game.cn.getTextWindow().output(snakes[i].current.x, snakes[i].current.y, 'S');
+			SLLNode temp =snakes[i].body.headnode;
+			while (temp != null) 
+			{
+				game.cn.getTextWindow().output(temp.location.x, temp.location.y, temp.value);
+				temp = temp.GetNext();
+			}
 		}
 	}
 	public boolean ContainCoordinate(Coordinate coordinate) {
@@ -67,6 +73,7 @@ public class SnakeController {
 			while (flag) {
 				if (snakes[i].IsStuck()) {
 					snakes[i].Reverse();
+					flag = false;
 				}
 				Coordinate coordinate = snakes[i].GetMoveRequest();
 				Snake tocheck = IsFromAnotherSnake(coordinate.Add(snakes[i].current), snakes[i]);
