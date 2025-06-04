@@ -1,5 +1,9 @@
 package pbb_project2;
 
+import java.awt.Color;
+
+import enigma.console.TextAttributes;
+
 public class SnakeController {
 	NumberSnake game;
 	Snake[] snakes = new Snake[1000];
@@ -10,11 +14,13 @@ public class SnakeController {
 	}
 	public void PrintSnakes() {
 		for (int i = 0; i < top; i++) {
-			game.cn.getTextWindow().output(snakes[i].current.x, snakes[i].current.y, 'S');
+			TextAttributes ta = new TextAttributes(Color.pink, Color.black);
+			game.cn.getTextWindow().output(snakes[i].current.x, snakes[i].current.y, 'S', ta);
 			SLLNode temp =snakes[i].body.headnode;
 			while (temp != null) 
 			{
-				game.cn.getTextWindow().output(temp.location.x, temp.location.y, temp.value);
+				ta = new TextAttributes(Color.cyan, Color.BLACK);
+				game.cn.getTextWindow().output(temp.location.x, temp.location.y, temp.value, ta);
 				temp = temp.GetNext();
 			}
 		}
@@ -75,21 +81,23 @@ public class SnakeController {
 					snakes[i].Reverse();
 					flag = false;
 				}
-				Coordinate coordinate = snakes[i].GetMoveRequest();
-				Snake tocheck = IsFromAnotherSnake(coordinate.Add(snakes[i].current), snakes[i]);
-				if (tocheck != null) {
-					snakes[i].Collide(tocheck);
-					if(tocheck.Gettobedeleted()) 
-						DeleteSnake(tocheck);
-					if(snakes[i].Gettobedeleted()) 
-						DeleteSnake(i);
-					flag = false;
+				else {
+					Coordinate coordinate = snakes[i].GetMoveRequest();
+					Snake tocheck = IsFromAnotherSnake(coordinate.Add(snakes[i].current), snakes[i]);
+					if (tocheck != null) {
+						snakes[i].Collide(tocheck);
+						if(tocheck.Gettobedeleted()) 
+							DeleteSnake(tocheck);
+						if(snakes[i].Gettobedeleted()) 
+							DeleteSnake(i);
+						flag = false;
+					}
+					if (game.isAvailableToMove(coordinate.Add(snakes[i].current))) {
+						snakes[i].AcceptRequest();
+						flag = false;
+					}
+					snakes[i].RejectRequest();
 				}
-				if (game.isAvailableToMove(coordinate.Add(snakes[i].current))) {
-					snakes[i].AcceptRequest();
-					flag = false;
-				}
-				snakes[i].RejectRequest();
 			}
 		}
 	}

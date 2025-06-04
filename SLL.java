@@ -87,16 +87,11 @@ public class SLL {
 			return null;
 		}
 		SLL result = new SLL();
-		SLLNode lastNode = null;
-		while(lastNode != headnode) {
-			SLLNode tocheck = headnode;
-			while(tocheck.GetNext() != lastNode) {
-				tocheck = tocheck.GetNext();
-			}
-			result.Add(tocheck.location, tocheck.value);
-			lastNode = tocheck;
+		SLLNode toadd = headnode;
+		while (toadd != null) {
+			result.Add(toadd.location, toadd.value);
+			toadd = toadd.GetNext();
 		}
-		result.Add(headnode.location, headnode.value);
 		return result.headnode;
 	}
 	public void Reverse() {

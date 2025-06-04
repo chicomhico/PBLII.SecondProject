@@ -33,8 +33,14 @@ public class Snake {
 		return 0;
 	}
 	public boolean IsStuck() {
-		if (lastmove == null)
-			return false;
+		if (lastmove == null) 
+		{
+			boolean result = !controller.game.isAvailableToMove(current.Add(new Coordinate(0, 1)));
+			result = result && !controller.game.isAvailableToMove(current.Add(new Coordinate(0, -1)));
+			result = result && !controller.game.isAvailableToMove(current.Add(new Coordinate(1, 0)));
+			result = result && !controller.game.isAvailableToMove(current.Add(new Coordinate(-1, 0)));
+			return result;
+		}
 		boolean result = !controller.game.isAvailableToMove(current.Add(lastmove));
 		result = result && !controller.game.isAvailableToMove(current.Add(lastmove.TurnLeft()));
 		result = result && !controller.game.isAvailableToMove(current.Add(lastmove.TurnRight()));
@@ -42,7 +48,19 @@ public class Snake {
 	}
 	
 	public void Reverse() { //buraya reversenin kalanı
-		lastmove = lastmove.Negate();
+		Coordinate tempp = current.Copy();
+		lastmove = null;
+		SLLNode toprocess = body.headnode;
+		Coordinate toassign = tempp;
+		while (toprocess != null) 
+		{
+			Coordinate temp = toprocess.location;
+			toprocess.location = toassign;
+			toassign = temp;
+			toprocess = toprocess.GetNext();
+		}
+		current = toassign;
+		body.Reverse();
 	}
 	
 	public Coordinate GetMoveRequest() {
