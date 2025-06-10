@@ -127,21 +127,67 @@ public class Snake {
 			}
 		}
 	}
-	public void Collide(Snake snake) {
-Coordinate collisioncoordinate = current.Add(moveinprocess);
+	
+	private SLL SplitFrom(SLLNode node) {
+		SLLNode headnode = body.headnode;
+		if (node == null || headnode == null)
+			return null;
+
+		if (headnode == node) {
+			SLL newList = new SLL(headnode); 
+			headnode = null; 
+			return newList;
+		}
+
 		
+		SLLNode temp = headnode;
+		while (temp != null && temp.GetNext() != null) {
+			if (temp.GetNext() == node) {
+				SLL newList = new SLL(node);      
+				temp.SetNext(null);              
+				return newList;
+			}
+			temp = temp.GetNext();
+		}
+
+		return null;
+	}
+	public void Collide(Snake snake , Coordinate collisioncoordinate) {
 		if(snake.current.x == collisioncoordinate.x && snake.current.y == collisioncoordinate.y) {
+			//silinme
 			tobedeleted = true;
 			snake.tobedeleted = true;
+			System.out.print("deleted both");
 			return;
 		}
 		
 		else if(snake.body.getData(collisioncoordinate) != null) {
 			if(snake.body.getData(collisioncoordinate).value == '1') {
 				//birleşme
+				if (false) {
+				SLLNode snake2 = body.headnode;
+				SLLNode snake1 = snake.body.getData(collisioncoordinate);
+				while(snake2 != null) {
+					snake1.SetNext(snake2);
+					snake1 = snake1.GetNext();
+					snake2 = snake2.GetNext();
+				}
+				tobedeleted = true;}
 			}
 			else if(snake.body.getData(collisioncoordinate).value == '2' || snake.body.getData(collisioncoordinate).value == '3') {
 				// bölünme
+				SLLNode colNode = snake.body.getData(collisioncoordinate);
+			    
+			    SLL splited = snake.SplitFrom(colNode);
+			    
+			    Snake addedsnake = controller.AddSnake(colNode.location.Copy());
+			    
+			    addedsnake.body = splited;
+			    
+			    addedsnake.Reverse();
+
+			    this.Reverse();
+
 			}
 		}
 		

@@ -44,13 +44,14 @@ public class SnakeController {
 		}
 		return false;
 	}
-	public void AddSnake(Coordinate location) {
+	public Snake AddSnake(Coordinate location) {
 		snakes[top] = new Snake(new Coordinate(location.x, location.y), this); 
 		top++;
+		return snakes[top - 1];
 	}
 	private void DeleteSnake(int index) {
-		snakes[index] = snakes[top];
-		snakes[top] = null;
+		snakes[index] = snakes[top - 1];
+		snakes[top - 1] = null;
 		top--;
 	}
 	private void DeleteSnake(Snake snake) {
@@ -58,18 +59,18 @@ public class SnakeController {
 		while (snakes[index] != snake) {
 			index++;
 		}
-		snakes[index] = snakes[top];
-		snakes[top] = null;
+		snakes[index] = snakes[top - 1];
+		snakes[top - 1] = null;
 		top--;
 	}
 	private Snake IsFromAnotherSnake(Coordinate coordinate, Snake snake) {
 		for (int i = 0; i < top; i++) {
 			if (coordinate.x == snakes[i].current.x && coordinate.y == snakes[i].current.y)
 				if (snakes[i] != snake)
-					return snake;
+					return snakes[i];
 			if (snakes[i].body.Contains(coordinate))
 				if (snakes[i] != snake)
-					return snake;
+					return snakes[i];
 		}
 		return null;
 	}
@@ -82,21 +83,23 @@ public class SnakeController {
 					flag = false;
 				}
 				else {
-					Coordinate coordinate = snakes[i].GetMoveRequest();
-					Snake tocheck = IsFromAnotherSnake(coordinate.Add(snakes[i].current), snakes[i]);
+					Coordinate moverequest = snakes[i].GetMoveRequest();
+					Coordinate targetcoor = moverequest.Add(snakes[i].current);
+					Snake tocheck = IsFromAnotherSnake(targetcoor, snakes[i]);
 					if (tocheck != null) {
-						snakes[i].Collide(tocheck);
-						if(tocheck.Gettobedeleted()) 
-							DeleteSnake(tocheck);
+						snakes[i].Collide(tocheck, targetcoor);
 						if(snakes[i].Gettobedeleted()) 
 							DeleteSnake(i);
+						if(tocheck.Gettobedeleted()) 
+							DeleteSnake(tocheck);
 						flag = false;
 					}
-					if (game.isAvailableToMove(coordinate.Add(snakes[i].current))) {
+					else if (game.isAvailableToMove(moverequest.Add(snakes[i].current))) {
 						snakes[i].AcceptRequest();
 						flag = false;
 					}
-					snakes[i].RejectRequest();
+					else
+						snakes[i].RejectRequest();
 				}
 			}
 		}

@@ -30,23 +30,25 @@ public class SLL {
 		}
 		return null;
 	}
-	public boolean Contains(SLLNode node) {
-		if (node == null)
+	public boolean Contains(Coordinate data) {
+		if (data == null)
 			return false;
 		SLLNode activenode = headnode;
+		
 		while (activenode != null) {
-			if (activenode == node)
+			if (activenode.location.x == data.x && activenode.location.y == data.y)
 				return true;
 			activenode = activenode.GetNext();
 		}
 		return false;
 	}
-	public boolean Contains(Coordinate data) {
-		if (data == null)
+	public boolean Contains(SLLNode node) {
+		if (node == null)
 			return false;
 		SLLNode activenode = headnode;
+		
 		while (activenode != null) {
-			if (activenode.location.x == data.x && activenode.location.y == data.y)
+			if (activenode == node)
 				return true;
 			activenode = activenode.GetNext();
 		}
