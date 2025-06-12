@@ -152,27 +152,123 @@ public class Snake {
 
 		return null;
 	}
+	
+	private void Combine(Snake other , Coordinate collisioncoordinate) {
+		//ön hesaplar
+		int totalsize = body.Size() + other.body.Size();
+		int toaddstart = 0;
+		SLLNode tocheck = other.body.headnode;
+		Coordinate lastdirection = new Coordinate(0, 0);
+		while (tocheck.location.x != collisioncoordinate.x 
+				&& tocheck.location.y != collisioncoordinate.y) {
+			toaddstart++;
+			SLLNode temp = tocheck;
+			tocheck = tocheck.GetNext();
+			lastdirection = tocheck.location.Minus(temp.location);
+		}
+		SLL otherbody =  new SLL(other.body.headnode);
+		SLL thisbody = new SLL(body.headnode);
+		SLL lastpart = new SLL(tocheck.GetNext());
+		tocheck.SetNext(null);
+		tobedeleted = true;
+		int targetsize = totalsize - toaddstart - 1;
+		SLL coordinatestoadd = new SLL();
+		SLL alladdedcoordinates = new SLL();
+		Coordinate lastcoor = tocheck.location;
+		//eklenecek yolu belirleme
+		while (coordinatestoadd.Size() < targetsize) {
+			// her yönü dener
+			int triedways = 0;
+			Coordinate coortocheck = lastcoor.Add(lastdirection);
+			boolean iscontains = controller.game.isAvailableToMove(coortocheck) 
+					&& !alladdedcoordinates.Contains(coortocheck);
+			while (triedways < 4 && !iscontains) {
+				lastdirection = lastdirection.TurnRight();
+				triedways++;
+				coortocheck = lastcoor.Add(lastdirection);
+				iscontains = controller.game.isAvailableToMove(coortocheck) 
+						&& !alladdedcoordinates.Contains(coortocheck);
+			}
+			if (triedways == 4) {
+				if (coordinatestoadd.headnode == null) {
+					other.tobedeleted = true;
+					return;
+				}
+				coordinatestoadd.RemoveFirst();
+				if (coordinatestoadd.headnode != null)
+					lastcoor = coordinatestoadd.headnode.location;
+				else 
+					lastcoor = tocheck.location;
+			}
+			else {
+				lastcoor = coortocheck;
+				System.out.print(coortocheck.x + " , " + coortocheck.y + ";");
+				coordinatestoadd.Add(lastcoor, '-');
+				alladdedcoordinates.Add(lastcoor, '-');
+			}
+		}
+		/*try {
+			Thread.sleep(50000);
+		} catch (Exception e) {
+			
+		}*/
+		//execute check
+		/*while (coordinatestoadd.Size() >1) {
+			Coordinate first = coordinatestoadd.headnode.location;
+			coordinatestoadd.RemoveFirst();
+			Coordinate second = coordinatestoadd.headnode.location;
+			int result = first.x - second.x;
+			if (result <0)
+				result = -result;
+			int res2 = first.y - second.y;
+			if (res2 <0)
+				res2 = -res2;
+			while (result+res2 > 1)
+				System.out.print("bruh");
+		}*/
+		//execute precalculations
+		otherbody.Reverse();
+		thisbody.Reverse();
+		lastpart.Reverse();
+		coordinatestoadd.Reverse();
+		SLL newbody = new SLL();
+		// execute results
+		while (coordinatestoadd.Size() > 0) {
+			if (lastpart.Size() > 0) {
+				newbody.Add(coordinatestoadd.headnode.location, lastpart.headnode.value);
+				lastpart.RemoveFirst();
+			}
+			else if (thisbody.Size() > 0){
+				newbody.Add(coordinatestoadd.headnode.location, thisbody.headnode.value);
+				thisbody.RemoveFirst();
+			}
+			else {
+				System.out.println("there is a problem");
+				System.out.println("there is a problem");
+			}
+			coordinatestoadd.RemoveFirst();
+		}
+		newbody.Reverse();
+		while (otherbody.Size() > 0) {
+			newbody.Add(otherbody.headnode.location, otherbody.headnode.value);
+			otherbody.RemoveFirst();
+		}
+		//newbody.Reverse();
+		other.body = newbody;
+	}
+	
 	public void Collide(Snake snake , Coordinate collisioncoordinate) {
 		if(snake.current.x == collisioncoordinate.x && snake.current.y == collisioncoordinate.y) {
 			//silinme
 			tobedeleted = true;
 			snake.tobedeleted = true;
-			System.out.print("deleted both");
 			return;
 		}
 		
 		else if(snake.body.getData(collisioncoordinate) != null) {
 			if(snake.body.getData(collisioncoordinate).value == '1') {
 				//birleşme
-				if (false) {
-				SLLNode snake2 = body.headnode;
-				SLLNode snake1 = snake.body.getData(collisioncoordinate);
-				while(snake2 != null) {
-					snake1.SetNext(snake2);
-					snake1 = snake1.GetNext();
-					snake2 = snake2.GetNext();
-				}
-				tobedeleted = true;}
+				Combine(snake, collisioncoordinate);
 			}
 			else if(snake.body.getData(collisioncoordinate).value == '2' || snake.body.getData(collisioncoordinate).value == '3') {
 				// bölünme

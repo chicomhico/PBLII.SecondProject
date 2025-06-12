@@ -12,7 +12,6 @@ public class Computer {
 	private Coordinate target = new Coordinate(0,0);
 	Coordinate current;
 	private Stack CurrentPath = new Stack(100000);
-	private Stack memoryStack = new Stack(1000);
 	private int timer = 0;
 	private boolean[][] isvisited = new boolean[55][23];
 	public int computer_score = 200;
@@ -76,6 +75,11 @@ public class Computer {
 			
 			// etrafındaki tüm kareler ya duvar ya da daha önce o kareden geçmişse else'e giriyor
 			else {
+				if (path.isEmpty()) {
+					CurrentPath = path;
+					ClearLastPath();
+					return;
+				}
 				path.Pop();
 				if (!path.isEmpty())
 					currentCoordinate = (Coordinate)path.Peek();
@@ -94,12 +98,14 @@ public class Computer {
 				if (game.board.GetCoor(coord) == '·') {
 					game.board.SetCoor(coord, ' ');
 				}
-				memoryStack.Push(coord);
 			}
 			findRandomTarget();
 			findPath(target);
+			if (CurrentPath.isEmpty()) {
+				return;
+			}
 		}
-		memoryStack = new Stack(1000);
+		Stack memoryStack = new Stack(1000);
 		Coordinate last = null;
 		while (!CurrentPath.isEmpty()) {
 			last = (Coordinate)CurrentPath.Pop();

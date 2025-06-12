@@ -27,10 +27,12 @@ public class SnakeController {
 	}
 	public boolean ContainCoordinate(Coordinate coordinate) {
 		for (int i = 0; i < top; i++) {
-			if (coordinate.x == snakes[i].current.x && coordinate.y == snakes[i].current.y)
-				return true;
-			if (snakes[i].body.Contains(coordinate))
-				return true;
+			if (!snakes[i].Gettobedeleted()) {
+				if (coordinate.x == snakes[i].current.x && coordinate.y == snakes[i].current.y)
+					return true;
+				if (snakes[i].body.Contains(coordinate))
+					return true;
+			}
 		}
 		return false;
 	
@@ -49,11 +51,6 @@ public class SnakeController {
 		top++;
 		return snakes[top - 1];
 	}
-	private void DeleteSnake(int index) {
-		snakes[index] = snakes[top - 1];
-		snakes[top - 1] = null;
-		top--;
-	}
 	private void DeleteSnake(Snake snake) {
 		int index = 0;
 		while (snakes[index] != snake) {
@@ -65,19 +62,34 @@ public class SnakeController {
 	}
 	private Snake IsFromAnotherSnake(Coordinate coordinate, Snake snake) {
 		for (int i = 0; i < top; i++) {
-			if (coordinate.x == snakes[i].current.x && coordinate.y == snakes[i].current.y)
-				if (snakes[i] != snake)
-					return snakes[i];
-			if (snakes[i].body.Contains(coordinate))
-				if (snakes[i] != snake)
-					return snakes[i];
+			if (!snakes[i].Gettobedeleted()) {
+				if (coordinate.x == snakes[i].current.x && coordinate.y == snakes[i].current.y)
+					if (snakes[i] != snake)
+						return snakes[i];
+				if (snakes[i].body.Contains(coordinate))
+					if (snakes[i] != snake)
+						return snakes[i];
+			}
 		}
 		return null;
+	}
+	private void DeleteToBeDeletedOnes() {
+		Snake[] todeletelist = new Snake[1000];
+		int todeletetop = 0;
+		for (int i = 0; i < top; i++) {
+			if (snakes[i].Gettobedeleted()) {
+				todeletelist[todeletetop] = snakes[i];
+				todeletetop++;
+			}	
+		}
+		for (int i = 0; i < todeletetop; i++) {
+			DeleteSnake(todeletelist[i]);
+		}
 	}
 	private void Playmove() {
 		for (int i = 0; i < top; i++) {
 			boolean flag = true;
-			while (flag) {
+			while (flag && !snakes[i].Gettobedeleted()) {
 				if (snakes[i].IsStuck()) {
 					snakes[i].Reverse();
 					flag = false;
@@ -88,10 +100,6 @@ public class SnakeController {
 					Snake tocheck = IsFromAnotherSnake(targetcoor, snakes[i]);
 					if (tocheck != null) {
 						snakes[i].Collide(tocheck, targetcoor);
-						if(snakes[i].Gettobedeleted()) 
-							DeleteSnake(i);
-						if(tocheck.Gettobedeleted()) 
-							DeleteSnake(tocheck);
 						flag = false;
 					}
 					else if (game.isAvailableToMove(moverequest.Add(snakes[i].current))) {
@@ -103,5 +111,6 @@ public class SnakeController {
 				}
 			}
 		}
+		DeleteToBeDeletedOnes();
 	}
 }

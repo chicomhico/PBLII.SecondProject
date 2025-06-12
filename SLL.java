@@ -54,6 +54,9 @@ public class SLL {
 		}
 		return false;
 	}
+	public void RemoveFirst() {
+		headnode = headnode.GetNext();
+	}
 	public void Remove(SLLNode node) {
 		if (node == null)
 			return;
@@ -83,6 +86,15 @@ public class SLL {
 			if (activenode.GetNext() == null)
 				activenode.SetNext(other.headnode);
 		}
+	}
+	public int Size() {
+		int result = 0;
+		SLLNode tocheck = headnode;
+		while (tocheck != null) {
+			result ++;
+			tocheck = tocheck.GetNext();
+		}
+		return result;
 	}
 	private SLLNode Reverseform() {
 		if (headnode == null) {

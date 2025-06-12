@@ -11,6 +11,9 @@ public class Coordinate {
 	public Coordinate Add(Coordinate coor) {
 		return new Coordinate(x + coor.x, y + coor.y);
 	}
+	public Coordinate Minus(Coordinate coor) {
+		return new Coordinate(x - coor.x, y - coor.y);
+	}
 	public Coordinate Negate() {
 		return new Coordinate(-y, -x);
 	}
