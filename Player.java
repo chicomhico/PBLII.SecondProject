@@ -157,6 +157,22 @@ public class Player {
     public void PlaceTrap() {
         if (rkey == KeyEvent.VK_SPACE) {
             if (!pressedSpace && !placed && trap != 0 && game.board.GetCoor(position) != '=') {
+            	for (int i = 0 ; i < game.snakecontroller.snakes.length; i++) {
+            		int dx = 1;
+            		int dy = 1;
+            		Snake tocheck = game.snakecontroller.snakes[i];
+            		if (tocheck != null) {
+            			for (int j = -dx; j < dx+1; j++) {
+            				for (int k = -dy; k < dy+1; k++) {
+            					Coordinate controlpos = position.Add(new Coordinate(j, k));
+                				if (controlpos.IsSame(tocheck.current)) {
+                					game.snakecontroller.DeleteSnake(tocheck);
+                					i--;
+                				}
+                			}
+            			}
+            		}
+            	}
                 placed = true;
                 int index = trapcount;
                 trapcount++;
