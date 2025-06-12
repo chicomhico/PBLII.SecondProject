@@ -149,7 +149,7 @@ public class Player {
     boolean placed = false;
     boolean pressedSpace = false;
     long[] trapTimes = new long[50];
-    Coordinate[] trapPositions = new Coordinate[1000]; 
+    Coordinate[] trapPositions = new Coordinate[50]; 
 
     public void PlaceTrap() {
         if (rkey == KeyEvent.VK_SPACE) {

@@ -27,6 +27,8 @@ public class Coordinate {
 		return new Coordinate(y, -x);
 	}
 	public boolean IsSame(Coordinate other) {
+		if (other == null)
+			return false;
 		return other.x == x && other.y == y;
 	}
 }

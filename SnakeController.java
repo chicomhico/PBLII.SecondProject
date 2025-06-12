@@ -76,6 +76,21 @@ public class SnakeController {
 	private void DeleteToBeDeletedOnes() {
 		Snake[] todeletelist = new Snake[1000];
 		int todeletetop = 0;
+		// checks for a trap
+		int[][] directions = { {0, 1}, {1, 0}, {0, -1}, {-1, 0}, {-1, 1}, {1, -1}, {-1, -1}, {-1, -1} };
+			for (int i = 0; i < top; i++) {
+				for (int j = 0; j < directions.length; j++) {
+				Coordinate coortoadd = new Coordinate(directions[j][0], directions[j][1]);
+				Coordinate tocheck = snakes[i].current.Add(coortoadd);
+				for (int k = 0; k < game.player.trapPositions.length; k++) {
+					Coordinate other = game.player.trapPositions[k];
+					if (tocheck.IsSame(other)) {
+						todeletelist[todeletetop] = snakes[i];
+						todeletetop++;
+					}
+				}
+			}
+		}
 		for (int i = 0; i < top; i++) {
 			if (snakes[i].Gettobedeleted()) {
 				todeletelist[todeletetop] = snakes[i];
@@ -87,6 +102,7 @@ public class SnakeController {
 		}
 	}
 	private void Playmove() {
+		//plays move
 		for (int i = 0; i < top; i++) {
 			boolean flag = true;
 			while (flag && !snakes[i].Gettobedeleted()) {
