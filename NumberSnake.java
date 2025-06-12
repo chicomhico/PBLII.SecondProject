@@ -17,6 +17,7 @@ public class NumberSnake {
 	Computer computer;
 	SnakeController snakecontroller;
 	public void main() throws Exception {
+		//starts instances
 		snakecontroller = new SnakeController(this);
 		board = new Board(this);
 		player = new Player(this);
@@ -29,14 +30,18 @@ public class NumberSnake {
 		while(flag) {
 			long currenttime = System.currentTimeMillis();
 			long difference = currenttime - previoustime;
+			// that is for speeding the game up
 			difference *= 1;
+			//updates every element and gets does the map changed
 			Boolean ismapchanged = player.TimeElapse(difference);
 			ismapchanged = ismapchanged || board.TimeElapse(difference);
 			ismapchanged = ismapchanged || computer.TimeElapse(difference);
 			ismapchanged = ismapchanged || snakecontroller.TimeElapse(difference);
+			//if map has changed than prints the map
 			if (ismapchanged) {
 				drawAll();
 			}
+			//board time increase
 			timertimer += difference;
 			
 			if (timertimer > 1000) {
@@ -45,6 +50,7 @@ public class NumberSnake {
 				board.displayTimer(timer);
 			}
 			previoustime = currenttime;
+			//waits a bit
 			Thread.sleep(1);
 
 			player.PlaceTrap();
@@ -87,12 +93,16 @@ public class NumberSnake {
 	public void drawAll() {
         board.printMap();
         TextAttributes ta = new TextAttributes(Color.yellow, Color.red);
+        //prints computer target
         cn.getTextWindow().output(computer.GetTarget().x, computer.GetTarget().y
         		, board.GetCoor(computer.GetTarget()), ta);
         ta = new TextAttributes(Color.green, Color.black);
+        //prints player
         cn.getTextWindow().output(player.position.x, player.position.y, player.symbol, ta);
         ta = new TextAttributes(Color.red, Color.black);
+        //prints computer
         cn.getTextWindow().output(computer.current.x, computer.current.y, 'C', ta);
+        //prints snakes
         snakecontroller.PrintSnakes();
         cn.getTextWindow().output(55, 23, ' ');
     }

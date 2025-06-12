@@ -19,6 +19,7 @@ public class Computer {
 		return target.Copy();
 	}
 	public boolean TimeElapse(long elapsedtime) {
+		//result says does the map changed
 		timer += elapsedtime;
 		if (timer > 400) {
 			timer -= 400;
