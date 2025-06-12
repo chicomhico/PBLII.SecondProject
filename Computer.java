@@ -73,7 +73,7 @@ public class Computer {
 			
 			
 			
-			// etrafındaki tüm kareler ya duvar ya da daha önce o kareden geçmişse else'e giriyor
+			// if all the surrounding squares are either walls or have already been visited, it goes into the else block.
 			else {
 				if (path.isEmpty()) {
 					CurrentPath = path;
