@@ -14,4 +14,8 @@ public class SLLNode {
 	public void SetNext(SLLNode node) {
 		nextnode = node;
 	}
+	public Coordinate getLocation()
+	{
+		return location;
+	}
 }
