@@ -13,7 +13,7 @@ public class Player {
     private int trap=0;
     private int score = 0;
     
-    private int invincibilitytime = 3000;
+    private int invincibilitytime = 3000;//spare 3 second invincibility
     
     public boolean isdead = false;
     
@@ -24,7 +24,7 @@ public class Player {
 
     Coordinate position;
     
-    long timer = 0;
+    long timer = 0;//for timing
 
     public Player(NumberSnake game) throws Exception {
     	position = new Coordinate(5, 5);
@@ -42,15 +42,17 @@ public class Player {
         game.cn.getTextWindow().addKeyListener(klis);
     }
     public boolean TimeElapse(long elapsedtime) {
+    	//result says does map changed
     	neighborDamage(elapsedtime);
     	timer += elapsedtime;
 		if (energy > 0) {
+			//if player has an energy update time gets shorter
 			timer += elapsedtime;
 			//energy -= elapsedtime;
 			if (energy < 0)
 				energy = 0;
 		}
-		Interface();
+		Interface();//shows player panel
 		if (timer > 200) {
 			timer -= 200;
 			return update();
@@ -58,7 +60,7 @@ public class Player {
 		return false;
     }
 
-    public boolean update() {
+    private boolean update() {
     	boolean result = false;
         if (keypr == 1) {
         	if(energy>0) {
@@ -85,7 +87,7 @@ public class Player {
             position.x = newX;
             position.y = newY;
             keypr = 0;
-            updatePlayer();
+            updatePlayer();//collecting treasures
         }
         return result;
     }
@@ -100,7 +102,7 @@ public class Player {
         return true;*/
     	return game.isAvailableToMove(new Coordinate(newX, newY));
     }
-    public void Interface() {
+    public void Interface() {//shows player interface
     	game.cn.getTextWindow().setCursorPosition(61, 10);
     	System.out.print("---Player---");
     	game.cn.getTextWindow().setCursorPosition(62, 11);
@@ -119,9 +121,10 @@ public class Player {
     	game.cn.getTextWindow().setCursorPosition(62, 19);
     	System.out.print("Score   : " + game.computer.computer_score );
     	TextAttributes ta = new TextAttributes(Color.blue, new Color(165,42,42));
-    	game.cn.getTextWindow().output(0, 0, '#', ta);//önemli engigma hatasını çözüyordu :D
+    	game.cn.getTextWindow().output(0, 0, '#', ta);//solves a problem causes by enigma
     }
     private void updatePlayer() {
+    	//player eating
     	if (game.board.GetCoor(position) =='1') {
 			energy+=500;
 			score+=1;
@@ -148,6 +151,7 @@ public class Player {
 		}
     }
 
+    //variables for trap
     boolean placed = false;
     boolean pressedSpace = false;
     long[] trapTimes = new long[50];
@@ -157,6 +161,7 @@ public class Player {
     public void PlaceTrap() {
         if (rkey == KeyEvent.VK_SPACE) {
             if (!pressedSpace && !placed && trap != 0 && game.board.GetCoor(position) != '=') {
+            	//insta kill nearbody snakes
             	for (int i = 0 ; i < game.snakecontroller.snakes.length; i++) {
             		int dx = 1;
             		int dy = 1;
@@ -173,6 +178,7 @@ public class Player {
             			}
             		}
             	}
+            	//placing
                 placed = true;
                 int index = trapcount;
                 trapcount++;
@@ -193,6 +199,7 @@ public class Player {
         long now = System.currentTimeMillis();
 
         for (int i = 0; i < trapTimes.length; i++) {
+        	//if it exceeds time limit then deletes
             if (trapTimes[i] != 0 && now - trapTimes[i] >= 10000) {
                 Coordinate trapCoor = trapPositions[i];
                 if (trapCoor != null) {
@@ -225,10 +232,12 @@ public class Player {
         if (life < 0) life = 0;
     }
     private void neighborDamage(long elapsedtime) {
+    	//if it is invincible skips that
     	if (invincibilitytime > 0) {
     		invincibilitytime -= elapsedtime;
     		return;
     	}
+    	//deals damage as per the rules
 		Player player = this;
 		Snake[] snakes = game.snakecontroller.snakes;
 		Computer computer = game.computer;
