@@ -213,4 +213,7 @@ public class Snake {
 			}
 		}
 	}
+	public SLL getBody() {
+	    return body;
+	}
 }
