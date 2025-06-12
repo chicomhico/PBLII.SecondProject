@@ -9,7 +9,7 @@ public class Player {
     private int life=50000;
     private int trap=0;
     private int score = 0;
-    private static  Trap[] traps = new Trap[50];
+    private Trap[] traps = new Trap[50];
     
     private int invincibilitytime = 3000;
     

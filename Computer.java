@@ -137,8 +137,8 @@ public class Computer {
 	
 	private void findRandomTarget() {
 		boolean isFound = false;
-		
-		while(!isFound) {
+		int trycount = 0;
+		while(!isFound && trycount < 1000000) {
 			target.x = random.nextInt(55);
 			target.y = random.nextInt(23);
 			
@@ -146,6 +146,7 @@ public class Computer {
 					|| game.board.GetCoor(target) == '3') {
 				isFound = true;
 			}
+			trycount++;
 		}
 	}
 	

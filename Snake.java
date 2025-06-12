@@ -202,7 +202,6 @@ public class Snake {
 			}
 			else {
 				lastcoor = coortocheck;
-				System.out.print(coortocheck.x + " , " + coortocheck.y + ";");
 				coordinatestoadd.Add(lastcoor, '-');
 				alladdedcoordinates.Add(lastcoor, '-');
 			}
@@ -296,7 +295,8 @@ public class Snake {
 	}
 	private void FindRandomTarget() {
 		boolean isFound = false;
-		if (controller.game.board != null) {
+		int trycount = 0;
+		if (controller.game.board != null && trycount < 1000000) {
 			while(!isFound) {
 				target.x = random.nextInt(55);
 				target.y = random.nextInt(23);
@@ -307,6 +307,7 @@ public class Snake {
 					isFound = true;
 				}
 			}
+			trycount++;
 		}
 	}
 	public SLL getBody() {
