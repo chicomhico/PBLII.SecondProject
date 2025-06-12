@@ -197,6 +197,16 @@ public class Player {
             }
         }
     }
+    public int getLife() {
+        return life;
+    }
+    public void setLife(int life) {
+        this.life = life;    }
+
+    public void takeDamage(int amount) {
+        life -= amount;
+        if (life < 0) life = 0;
+    }
 
 }
 
