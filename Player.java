@@ -184,21 +184,8 @@ public class Player {
                     int cx = trapCoor.x;
                     int cy = trapCoor.y;
                     
-                    for (int dy = -1; dy <= 1; dy++) {
-                        for (int dx = -1; dx <= 1; dx++) {
-                            int nx = cx + dx;
-                            int ny = cy + dy;
-                            Coordinate tocheck = new Coordinate(nx, ny);
-                            
-                            
-                            if (ny >= 0 && ny < game.board.maplengtfirst &&
-                                nx >= 0 && nx < game.board.maplengtsecond && 
-                                game.board.GetCoor(tocheck) != 'C' && game.board.GetCoor(tocheck) != 'P' &&
-			       game.board.GetCoor(tocheck) != '#') {
-                                game.board.SetCoor(tocheck, ' '); 
-                            }
-                        }
-                    }
+                    Coordinate tocheck = new Coordinate(cx, cy);
+                    game.board.SetCoor(tocheck, ' '); 
 
                     trapTimes[i] = 0;
                     trapPositions[i] = null;
