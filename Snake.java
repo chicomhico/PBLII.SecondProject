@@ -22,6 +22,9 @@ public class Snake {
 		this.controller = controller;
 		FindRandomTarget();
 	}
+	public void Kill() {
+		tobedeleted = true;
+	}
 	public boolean Gettobedeleted() {
 		return tobedeleted;
 	}
@@ -35,15 +38,15 @@ public class Snake {
 	public boolean IsStuck() {
 		if (lastmove == null) 
 		{
-			boolean result = !controller.game.isAvailableToMove(current.Add(new Coordinate(0, 1)));
-			result = result && !controller.game.isAvailableToMove(current.Add(new Coordinate(0, -1)));
-			result = result && !controller.game.isAvailableToMove(current.Add(new Coordinate(1, 0)));
-			result = result && !controller.game.isAvailableToMove(current.Add(new Coordinate(-1, 0)));
+			boolean result = !controller.AvailabletoSnakeMove(current.Add(new Coordinate(0, 1)), this);
+			result = result && !controller.AvailabletoSnakeMove(current.Add(new Coordinate(0, -1)), this);
+			result = result && !controller.AvailabletoSnakeMove(current.Add(new Coordinate(1, 0)), this);
+			result = result && !controller.AvailabletoSnakeMove(current.Add(new Coordinate(-1, 0)), this);
 			return result;
 		}
-		boolean result = !controller.game.isAvailableToMove(current.Add(lastmove));
-		result = result && !controller.game.isAvailableToMove(current.Add(lastmove.TurnLeft()));
-		result = result && !controller.game.isAvailableToMove(current.Add(lastmove.TurnRight()));
+		boolean result = !controller.AvailabletoSnakeMove(current.Add(lastmove), this);
+		result = result && !controller.AvailabletoSnakeMove(current.Add(lastmove.TurnLeft()), this);
+		result = result && !controller.AvailabletoSnakeMove(current.Add(lastmove.TurnRight()), this);
 		return result;
 	}
 	

@@ -60,6 +60,13 @@ public class SnakeController {
 		snakes[top - 1] = null;
 		top--;
 	}
+	public boolean AvailabletoSnakeMove(Coordinate coordinate, Snake snake) {
+		boolean result = game.isAvailableToMove(coordinate);
+		if (!result) {
+			result = IsFromAnotherSnake(coordinate, snake) != null;
+		}
+		return result;
+	}
 	private Snake IsFromAnotherSnake(Coordinate coordinate, Snake snake) {
 		for (int i = 0; i < top; i++) {
 			if (!snakes[i].Gettobedeleted()) {
@@ -108,6 +115,9 @@ public class SnakeController {
 			while (flag && !snakes[i].Gettobedeleted()) {
 				if (snakes[i].IsStuck()) {
 					snakes[i].Reverse();
+					if (snakes[i].IsStuck()) {
+						snakes[i].Kill();
+					}
 					flag = false;
 				}
 				else {
