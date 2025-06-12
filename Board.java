@@ -228,5 +228,56 @@ public class Board {
 		
 		return map;
 	}
+	public void neighborDamage(Player player, Snake[] snakes, char[][] map) {
+	    int playerLife = player.getLife();
+	    int x = player.position.x;
+	    int y = player.position.y;
+	    int damage = 0;
+
+	    int[][] directions = { {0, 1}, {1, 0}, {0, -1}, {-1, 0} };
+
+	    for (int i = 0; i < directions.length; i++) {
+	        int nx = x + directions[i][0];
+	        int ny = y + directions[i][1];
+
+	        if (nx >= 0 && ny >= 0 && ny < map.length && nx < map[0].length) {
+	            char cell = map[ny][nx];
+
+	            if (cell == 'C') {
+	                damage += 30;
+	            } else if (cell == 'S') {
+	                damage += 1;
+	            }
+
+	            Coordinate neighborCoord = new Coordinate(nx, ny);
+	            for (Snake snake : snakes) {
+	                if (neighborCoord.equals(snake.current)) {
+	                    damage += 1;
+	                    break;
+	                }
+
+	                SLL body = snake.body;
+	                SLLNode node = body.headnode;
+	                while (node != null) {
+	                    Coordinate bodyPart = (Coordinate) node.getLocation();
+	                    if (neighborCoord.equals(bodyPart)) {
+	                        damage += 1;
+	                        break;
+	                    }
+	                    node = node.GetNext();
+	                }
+	            }
+	        }
+	    }
+
+	    playerLife -= damage;
+
+	    if (playerLife <= 0) {
+	        System.out.println("Game Over!");
+	    }
+
+	    player.setLife(playerLife);
+	}
+
 	
 }
