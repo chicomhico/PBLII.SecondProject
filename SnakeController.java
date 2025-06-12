@@ -59,6 +59,7 @@ public class SnakeController {
 		snakes[index] = snakes[top - 1];
 		snakes[top - 1] = null;
 		top--;
+		game.board.srob--;
 	}
 	public boolean AvailabletoSnakeMove(Coordinate coordinate, Snake snake) {
 		boolean result = game.isAvailableToMove(coordinate);
