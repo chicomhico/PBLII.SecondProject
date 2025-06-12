@@ -148,7 +148,7 @@ public class Snake {
 
 		if (headnode == node) {
 			SLL newList = new SLL(headnode); 
-			headnode = null; 
+			body.headnode = null; 
 			return newList;
 		}
 
