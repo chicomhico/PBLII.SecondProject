@@ -53,7 +53,7 @@ public class SnakeController {
 	}
 	private void DeleteSnake(Snake snake) {
 		int index = 0;
-		while (snakes[index] != snake) {
+		while (snakes[index] != snake && index < top) {
 			index++;
 		}
 		snakes[index] = snakes[top - 1];

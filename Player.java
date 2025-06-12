@@ -12,7 +12,6 @@ public class Player {
     private int life=50000;
     private int trap=0;
     private int score = 0;
-    private Trap[] traps = new Trap[50];
     
     private int invincibilitytime = 3000;
     
@@ -143,7 +142,6 @@ public class Player {
 			game.board.SetCoor(position, ' ');
 		}
     	if (game.board.GetCoor(position) =='@') {
-    		traps[trap] = new Trap();
 			trap++;
 			score+=50;
 			game.board.SetCoor(position, ' ');
@@ -154,13 +152,14 @@ public class Player {
     boolean pressedSpace = false;
     long[] trapTimes = new long[50];
     Coordinate[] trapPositions = new Coordinate[50]; 
+    private int trapcount = 0;
 
     public void PlaceTrap() {
         if (rkey == KeyEvent.VK_SPACE) {
-            if (!pressedSpace && !placed && trap != 0) {
+            if (!pressedSpace && !placed && trap != 0 && game.board.GetCoor(position) != '=') {
                 placed = true;
-                int index = trap - 1;
-                traps[index].Place(position.y, position.x);
+                int index = trapcount;
+                trapcount++;
                 game.board.SetCoor(position, '=');
 
                 trapPositions[index] = position.Copy();
@@ -177,7 +176,7 @@ public class Player {
     public void updateTraps() {
         long now = System.currentTimeMillis();
 
-        for (int i = 0; i < traps.length; i++) {
+        for (int i = 0; i < trapTimes.length; i++) {
             if (trapTimes[i] != 0 && now - trapTimes[i] >= 10000) {
                 Coordinate trapCoor = trapPositions[i];
                 if (trapCoor != null) {
@@ -187,8 +186,14 @@ public class Player {
                     Coordinate tocheck = new Coordinate(cx, cy);
                     game.board.SetCoor(tocheck, ' '); 
 
-                    trapTimes[i] = 0;
-                    trapPositions[i] = null;
+                    if (i != trapcount) {
+                    	trapTimes[i] = trapTimes[trapcount];
+                    	trapPositions[i] = trapPositions[trapcount];
+                    	i--;
+                    }
+                    trapTimes[trapcount] = 0;
+                	trapPositions[trapcount] = null;
+                    trapcount--;
                 }
             }
         }
