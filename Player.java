@@ -120,7 +120,7 @@ public class Player {
     	game.cn.getTextWindow().setCursorPosition(62, 19);
     	System.out.print("Score   : " + game.computer.computer_score );
     	TextAttributes ta = new TextAttributes(Color.blue, new Color(165,42,42));
-    	game.cn.getTextWindow().output(0, 0, '#', ta);//önemli engigma hatasını çözüyor
+    	game.cn.getTextWindow().output(0, 0, '#', ta);//önemli engigma hatasını çözüyordu :D
     }
     private void updatePlayer() {
     	if (game.board.GetCoor(position) =='1') {
