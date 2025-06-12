@@ -7,7 +7,7 @@ public class Computer {
 		this.game = game;
 		ClearLastPath();
 	}
-	NumberSnake game;
+	NumberSnake game;//link to the game
 	private Random random = new Random();
 	private Coordinate target = new Coordinate(0,0);
 	Coordinate current;
@@ -23,6 +23,7 @@ public class Computer {
 		if (timer > 400) {
 			timer -= 400;
 			PlayMove();
+			//collecting treasure
 			if (game.board.GetCoor(current) == '·')
 				game.board.SetCoor(current, ' ');
 			if(game.board.GetCoor(current) == '1') {
@@ -50,6 +51,7 @@ public class Computer {
 		Coordinate currentCoordinate = new Coordinate(current.x, current.y);
 		while(currentCoordinate.x != targetCoordinate.x ||currentCoordinate.y != targetCoordinate.y) {
 			currentCoordinate = new Coordinate(currentCoordinate.x, currentCoordinate.y);
+			//tries every way
 			if(game.isAvailableToMove(new Coordinate(currentCoordinate.x + 1,currentCoordinate.y)) && 
 					!isvisited[currentCoordinate.x + 1][currentCoordinate.y]) {
 				currentCoordinate.x++;
@@ -75,8 +77,10 @@ public class Computer {
 			
 			// if all the surrounding squares are either walls or have already been visited, it goes into the else block.
 			else {
+				//if there is no path returns
 				if (path.isEmpty()) {
 					CurrentPath = path;
+					//deletes signature of isvisited
 					ClearLastPath();
 					return;
 				}
@@ -88,9 +92,11 @@ public class Computer {
 			
 		}
 		CurrentPath = path;
+		//deletes signature of isvisited
 		ClearLastPath();
 	}
 	private void PlayMove() {
+		//if target has eaten or computer gets target finds new one
 		if (!(game.board.GetCoor(target) == '1' || game.board.GetCoor(target) == '2' 
 				|| game.board.GetCoor(target) == '3') || CurrentPath.isEmpty()) {
 			while(!CurrentPath.isEmpty()) {
@@ -101,10 +107,12 @@ public class Computer {
 			}
 			findRandomTarget();
 			findPath(target);
+			// if there is no way to go it waits for 1 computer tick
 			if (CurrentPath.isEmpty()) {
 				return;
 			}
 		}
+		//reads first element of the path
 		Stack memoryStack = new Stack(1000);
 		Coordinate last = null;
 		while (!CurrentPath.isEmpty()) {
@@ -121,6 +129,7 @@ public class Computer {
 			CurrentPath.Push(last);
 		}
 		
+		//shows path
 		while(!CurrentPath.isEmpty()) {
 			Coordinate coord = (Coordinate) CurrentPath.Pop();
 			if (game.board.GetCoor(coord) == ' ') {
@@ -128,6 +137,7 @@ public class Computer {
 			}
 			memoryStack.Push(coord);
 		}
+		//makes every normal
 		while (!memoryStack.isEmpty()) {
 			last = (Coordinate)memoryStack.Pop();
 			CurrentPath.Push(last);
@@ -137,7 +147,7 @@ public class Computer {
 	
 	private void findRandomTarget() {
 		boolean isFound = false;
-		int trycount = 0;
+		int trycount = 0;//avoids infinite loop in case of there is no treasure
 		while(!isFound && trycount < 1000000) {
 			target.x = random.nextInt(55);
 			target.y = random.nextInt(23);

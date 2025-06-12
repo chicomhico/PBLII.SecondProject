@@ -6,7 +6,7 @@ import java.awt.event.KeyListener;
 import enigma.console.TextAttributes;
 
 public class Player {
-	public NumberSnake game;
+	public NumberSnake game;//link to the game
     private KeyListener klis;
     private int energy=10000;
     private int life=50000;
