@@ -50,7 +50,7 @@ public class Snake {
 		return result;
 	}
 	
-	public void Reverse() { //buraya reversenin kalanı
+	public void Reverse() { //reverses snake
 		Coordinate tempp = current.Copy();
 		lastmove = null;
 		SLLNode toprocess = body.headnode;
@@ -67,8 +67,10 @@ public class Snake {
 	}
 	
 	public Coordinate GetMoveRequest() {
+		//if there is no target finds target
 		if (target == null)
 			FindRandomTarget();
+		//if it has played any move it chooses from 3 direction(in its random move :D and %80 goes same way)
 		if (lastmove != null) {
 			if (randommove == 0) {
 				int difference = Sign(target.x-current.x);
@@ -94,6 +96,7 @@ public class Snake {
 			moveinprocess = lastmove.TurnLeft();
 			return moveinprocess;
 		}
+		//if it has not played a move it plays random 4 direction(in its random move :D)
 		int randomint = random.nextInt(4);
 		if (randomint == 0)
 			moveinprocess = new Coordinate(0, 1);
@@ -106,14 +109,15 @@ public class Snake {
 		return moveinprocess;
 	}
 	public void AcceptRequest() {
+		//plays last move
 		decidetoturn = false;
 		lastmove = moveinprocess;
 		Coordinate tempp = current.Copy();
 		current = current.Add(lastmove);
-		//buraya yemesi ve bodynin ilerlemesi yapılacak
 		char currentdata = controller.game.board.GetCoor(current);
 		if (currentdata == '1' || currentdata == '2' || currentdata == '3') 
 		{
+			//eats that treasure
 			body.Add(tempp, currentdata);
 			controller.game.board.SetCoor(current, ' ');
 			if (currentdata == '1') {
@@ -128,6 +132,7 @@ public class Snake {
 		}
 		else 
 		{
+			//pushes its body
 			SLLNode toprocess = body.headnode;
 			Coordinate toassign = tempp;
 			while (toprocess != null) 
@@ -145,6 +150,7 @@ public class Snake {
 	}
 	
 	private SLL SplitFrom(SLLNode node) {
+		//makes previous next null and returns node as SLL
 		SLLNode headnode = body.headnode;
 		if (node == null || headnode == null)
 			return null;
@@ -170,7 +176,7 @@ public class Snake {
 	}
 	
 	private void Combine(Snake other , Coordinate collisioncoordinate) {
-		//ön hesaplar
+		//some precalculations
 		int totalsize = body.Size() + other.body.Size();
 		int toaddstart = 0;
 		SLLNode tocheck = other.body.headnode;
@@ -191,9 +197,9 @@ public class Snake {
 		SLL coordinatestoadd = new SLL();
 		SLL alladdedcoordinates = new SLL();
 		Coordinate lastcoor = tocheck.location;
-		//eklenecek yolu belirleme
+		//finding way to add remaining parts
 		while (coordinatestoadd.Size() < targetsize) {
-			// her yönü dener
+			// tries every possible way
 			int triedways = 0;
 			Coordinate coortocheck = lastcoor.Add(lastdirection);
 			boolean iscontains = controller.game.isAvailableToMove(coortocheck) 
@@ -206,6 +212,8 @@ public class Snake {
 						&& !alladdedcoordinates.Contains(coortocheck);
 			}
 			if (triedways == 4) {
+				//if all ways are closed
+				//if there is no way to add that much part both disappear
 				if (coordinatestoadd.headnode == null) {
 					other.tobedeleted = true;
 					return;
@@ -274,7 +282,7 @@ public class Snake {
 	
 	public void Collide(Snake snake , Coordinate collisioncoordinate) {
 		if(snake.current.x == collisioncoordinate.x && snake.current.y == collisioncoordinate.y) {
-			//silinme
+			//delete both
 			tobedeleted = true;
 			snake.tobedeleted = true;
 			return;
@@ -282,11 +290,11 @@ public class Snake {
 		
 		else if(snake.body.getData(collisioncoordinate) != null) {
 			if(snake.body.getData(collisioncoordinate).value == '1') {
-				//birleşme
+				//combining
 				Combine(snake, collisioncoordinate);
 			}
 			else if(snake.body.getData(collisioncoordinate).value == '2' || snake.body.getData(collisioncoordinate).value == '3') {
-				// bölünme
+				// splitting
 				SLLNode colNode = snake.body.getData(collisioncoordinate);
 			    
 			    SLL splited = snake.SplitFrom(colNode);
@@ -306,12 +314,13 @@ public class Snake {
 
 	}
 	public void RejectRequest() {
+		//enters randommode if it does not in randommode
 		if (randommove == 0)
 			randommove += 20;
 	}
 	private void FindRandomTarget() {
 		boolean isFound = false;
-		int trycount = 0;
+		int trycount = 0; // this avaids infinite looop in case of there is no treasure
 		if (controller.game.board != null && trycount < 1000000) {
 			while(!isFound) {
 				target.x = random.nextInt(55);
