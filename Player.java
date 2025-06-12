@@ -1,6 +1,9 @@
 package pbb_project2;
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+
+import enigma.console.TextAttributes;
 
 public class Player {
 	public NumberSnake game;
@@ -116,7 +119,8 @@ public class Player {
     	System.out.print("S Robot : " + game.board.srob );
     	game.cn.getTextWindow().setCursorPosition(62, 19);
     	System.out.print("Score   : " + game.computer.computer_score );
-    	game.cn.getTextWindow().output(0, 0, '#');//önemli engigma hatasını çözüyor
+    	TextAttributes ta = new TextAttributes(Color.blue, new Color(165,42,42));
+    	game.cn.getTextWindow().output(0, 0, '#', ta);//önemli engigma hatasını çözüyor
     }
     private void updatePlayer() {
     	if (game.board.GetCoor(position) =='1') {
