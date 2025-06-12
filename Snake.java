@@ -113,6 +113,15 @@ public class Snake {
 		{
 			body.Add(tempp, currentdata);
 			controller.game.board.SetCoor(current, ' ');
+			if (currentdata == '1') {
+				controller.game.computer.computer_score += 1;
+			}
+			else if (currentdata == '2') {
+				controller.game.computer.computer_score += 4;
+			}
+			else {
+				controller.game.computer.computer_score += 16;
+			}
 		}
 		else 
 		{
@@ -125,6 +134,10 @@ public class Snake {
 				toassign = temp;
 				toprocess = toprocess.GetNext();
 			}
+		}
+		if (currentdata == '@') {
+			controller.game.board.SetCoor(current, ' ');
+			controller.game.computer.computer_score += 10;
 		}
 	}
 	
