@@ -29,7 +29,7 @@ public class NumberSnake {
 		while(flag) {
 			long currenttime = System.currentTimeMillis();
 			long difference = currenttime - previoustime;
-			difference *= 5;
+			difference *= 1;
 			Boolean ismapchanged = player.TimeElapse(difference);
 			ismapchanged = ismapchanged || board.TimeElapse(difference);
 			ismapchanged = ismapchanged || computer.TimeElapse(difference);

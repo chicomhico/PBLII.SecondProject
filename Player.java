@@ -6,10 +6,12 @@ public class Player {
 	public NumberSnake game;
     private KeyListener klis;
     private int energy=10000;
-    private int life=500;
+    private int life=50000;
     private int trap=0;
     private int score = 0;
     private static  Trap[] traps = new Trap[50];
+    
+    public boolean isdead = false;
     
     char symbol = 'P';
 
@@ -36,6 +38,7 @@ public class Player {
         game.cn.getTextWindow().addKeyListener(klis);
     }
     public boolean TimeElapse(long elapsedtime) {
+    	neighborDamage(elapsedtime);
     	timer += elapsedtime;
 		if (energy > 0) {
 			timer += elapsedtime;
@@ -99,7 +102,7 @@ public class Player {
     	game.cn.getTextWindow().setCursorPosition(62, 11);
     	System.out.print("Energy : " + energy/10 + "   " );
     	game.cn.getTextWindow().setCursorPosition(62, 12);
-    	System.out.print("Life   : " + life );
+    	System.out.print("Life   : " + life/100 + "   " );
     	game.cn.getTextWindow().setCursorPosition(62, 13);
     	System.out.print("Trap   : " + trap);
     	game.cn.getTextWindow().setCursorPosition(62, 14);
@@ -207,6 +210,49 @@ public class Player {
         life -= amount;
         if (life < 0) life = 0;
     }
+    private void neighborDamage(long elapsedtime) {
+		Player player = this;
+		Snake[] snakes = game.snakecontroller.snakes;
+		Computer computer = game.computer;
+	    int x = player.position.x;
+	    int y = player.position.y;
+	    int damage = 0;
 
+	    int[][] directions = { {0, 1}, {1, 0}, {0, -1}, {-1, 0} };
+
+	    for (int i = 0; i < directions.length; i++) {
+	        int nx = x + directions[i][0];
+	        int ny = y + directions[i][1];
+	        Coordinate neighborCoord = new Coordinate(nx, ny);
+	        if (computer.current.IsSame(neighborCoord)) {
+	        	damage += 30 * elapsedtime;
+	        }
+	        else {
+	        	for (Snake snake : snakes) {
+	        		if (snake != null) {
+	        	
+	        			if (neighborCoord.IsSame(snake.current)) {
+	            			damage += 1;
+	            			break;
+	            		}
+
+	            		SLL body = snake.body;
+	            		SLLNode node = body.headnode;
+	            		while (node != null) {
+	                		Coordinate bodyPart = node.location;
+	                		if (neighborCoord.IsSame(bodyPart)) {
+	                    		damage += 1 * elapsedtime;
+	                    		break;
+	                		}
+	                		node = node.GetNext();
+	            		}
+	        		}
+	        	}
+	        }
+	    }
+	    life -= damage;
+
+	    isdead = life <= 0;
+	}
 }
 

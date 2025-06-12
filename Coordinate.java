@@ -26,4 +26,7 @@ public class Coordinate {
 	public Coordinate TurnLeft() {
 		return new Coordinate(y, -x);
 	}
+	public boolean IsSame(Coordinate other) {
+		return other.x == x && other.y == y;
+	}
 }
