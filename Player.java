@@ -11,6 +11,8 @@ public class Player {
     private int score = 0;
     private static  Trap[] traps = new Trap[50];
     
+    private int invincibilitytime = 3000;
+    
     public boolean isdead = false;
     
     char symbol = 'P';
@@ -211,6 +213,10 @@ public class Player {
         if (life < 0) life = 0;
     }
     private void neighborDamage(long elapsedtime) {
+    	if (invincibilitytime > 0) {
+    		invincibilitytime -= elapsedtime;
+    		return;
+    	}
 		Player player = this;
 		Snake[] snakes = game.snakecontroller.snakes;
 		Computer computer = game.computer;
