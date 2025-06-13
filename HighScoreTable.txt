@@ -1,0 +1,7 @@
+High Score Table
+Berk 500
+Ali 350
+Sibel 350
+Namık 300
+Elif 150
+Kaan 100

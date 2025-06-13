@@ -59,7 +59,9 @@ public class Player {
 		}
 		return false;
     }
-
+    public int GetScore(){
+    	return score;
+    }
     private boolean update() {
     	boolean result = false;
         if (keypr == 1) {

@@ -27,7 +27,7 @@ public class NumberSnake {
 		long timertimer = 0;
 		board.displayTimer(timer);
 		drawAll();
-		while(flag) {
+		while(flag && !player.isdead) {
 			long currenttime = System.currentTimeMillis();
 			long difference = currenttime - previoustime;
 			// that is for speeding the game up
@@ -56,6 +56,7 @@ public class NumberSnake {
 			player.PlaceTrap();
 			player.updateTraps();
 		}
+		new HighScoreTable(player.GetScore(), this);
 		/*while(flag) {
 			player.Interface();
 			player.drawAll();
